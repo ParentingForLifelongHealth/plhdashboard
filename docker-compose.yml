@@ -51,21 +51,25 @@ services:
     container_name: superset_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8082:80"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/templates:/etc/nginx/templates:ro
+    networks:
+      - default
 
   redis:
     image: redis:7
     container_name: superset_cache
     restart: unless-stopped
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:6382:6379"
     volumes:
       - redis:/data
+    networks:
+      - default
 
   db:
     env_file:
@@ -81,6 +85,8 @@ services:
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - default
 
   superset:
     env_file:
@@ -104,12 +110,14 @@ services:
       superset-init:
         condition: service_completed_successfully
     volumes: *superset-volumes
+    networks:
+      - default
 
   superset-websocket:
     container_name: superset_websocket
     build: ./superset-websocket
     ports:
-      - 8080:8080
+      - 8083:8080
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -132,6 +140,9 @@ services:
       # Mounting a config file that contains a dummy secret required to boot up.
       # do not use this docker compose in production
       - ./docker/superset-websocket/config.json:/home/superset-websocket/config.json
+    networks:
+      - default
+
     environment:
       - PORT=8080
       - REDIS_HOST=redis
@@ -157,6 +168,9 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
+    networks:
+      - default
+
 
   superset-node:
     build:
@@ -186,6 +200,9 @@ services:
       - path: docker/.env-local # optional override
         required: false
     volumes: *superset-volumes
+    networks:
+      - default
+
 
   superset-worker:
     build:
@@ -207,6 +224,8 @@ services:
     volumes: *superset-volumes
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - default
     healthcheck:
       test: ["CMD-SHELL", "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME"]
     # Bump memory limit if processing selenium / thumbnails on superset-worker
@@ -230,6 +249,8 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
+    networks:
+      - default
 
   superset-tests-worker:
     build:
@@ -266,3 +287,8 @@ volumes:
     external: false
   redis:
     external: false
+
+networks:
+  default:
+    external:
+      name: my_custom_network

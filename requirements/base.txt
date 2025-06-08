@@ -448,3 +448,7 @@ zipp==3.21.0
     # via importlib-metadata
 zstandard==0.23.0
     # via flask-compress
+
+# CUSTOM
+thrift
+clickhouse-connect
