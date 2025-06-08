@@ -45,7 +45,7 @@ services:
     container_name: superset_nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8082:80"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -55,9 +55,11 @@ services:
     container_name: superset_cache
     restart: unless-stopped
     ports:
-      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:6382:6379"
     volumes:
       - redis:/data
+    networks:
+      - default
 
   db:
     env_file:
@@ -69,7 +71,9 @@ services:
     container_name: superset_db
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:5435:5432"
+    networks:
+      - default
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -94,12 +98,16 @@ services:
     volumes: *superset-volumes
     environment:
       CYPRESS_CONFIG: "${CYPRESS_CONFIG:-}"
+    networks:
+      - default
 
   superset-websocket:
     container_name: superset_websocket
     build: ./superset-websocket
     ports:
-      - 8080:8080
+      - 8083:8080
+    networks:
+      - default
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -145,6 +153,8 @@ services:
       CYPRESS_CONFIG: "${CYPRESS_CONFIG:-}"
     healthcheck:
       disable: true
+    networks:
+      - default
 
   superset-node:
     image: node:18
@@ -161,6 +171,9 @@ services:
         required: false
     depends_on: *superset-depends-on
     volumes: *superset-volumes
+    networks:
+      - default
+  
 
   superset-worker:
     build:
@@ -180,6 +193,8 @@ services:
     volumes: *superset-volumes
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - default
     healthcheck:
       test: ["CMD-SHELL", "celery -A superset.tasks.celery_app:app inspect ping -d celery@$$HOSTNAME"]
     # Bump memory limit if processing selenium / thumbnails on superset-worker
@@ -202,6 +217,9 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
+    networks:
+      - default
+
 
   superset-tests-worker:
     build:
@@ -236,3 +254,10 @@ volumes:
     external: false
   redis:
     external: false
+
+
+networks:
+  default:
+    external:
+      name: my_custom_network
+
