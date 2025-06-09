@@ -1992,3 +1992,7 @@ elif importlib.util.find_spec("superset_config"):
     except Exception:
         logger.exception("Found but failed to import local superset_config")
         raise
+
+
+
+PUBLIC_ROLE_LIKE_GAMMA = True
