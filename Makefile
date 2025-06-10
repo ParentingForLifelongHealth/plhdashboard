@@ -112,3 +112,8 @@ report-celery-beat:
 
 admin-user:
 	superset fab create-admin
+
+
+docker-dev:
+	docker compose up -d 
+
