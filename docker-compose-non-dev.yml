@@ -42,6 +42,9 @@ services:
     restart: unless-stopped
     volumes:
       - redis:/data
+    networks:
+      - default
+
 
   db:
     env_file:
@@ -55,6 +58,9 @@ services:
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - default
+
 
   superset:
     env_file:
@@ -74,6 +80,9 @@ services:
       superset-init:
         condition: service_completed_successfully
     volumes: *superset-volumes
+    networks:
+      - default
+
 
   superset-init:
     container_name: superset_init
@@ -94,6 +103,9 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
+    networks:
+      - default
+
 
   superset-worker:
     build:
@@ -111,6 +123,9 @@ services:
         condition: service_completed_successfully
     user: "root"
     volumes: *superset-volumes
+    networks:
+      - default
+
     healthcheck:
       test:
         [
@@ -136,6 +151,9 @@ services:
     volumes: *superset-volumes
     healthcheck:
       disable: true
+    networks:
+      - default
+
 
 volumes:
   superset_home:
@@ -144,3 +162,8 @@ volumes:
     external: false
   redis:
     external: false
+
+networks:
+  default:
+    external:
+      name: my_custom_network
