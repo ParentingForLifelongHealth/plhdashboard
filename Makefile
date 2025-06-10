@@ -113,6 +113,11 @@ report-celery-beat:
 admin-user:
 	superset fab create-admin
 
+
+docker-dev:
+	docker compose up -d 
+
+
 # Docker Compose with auto-assigned ports (for running multiple instances)
 up:
 	./scripts/docker-compose-up.sh

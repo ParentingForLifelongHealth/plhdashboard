@@ -1,0 +1,58 @@
+core
+/superset/dashboard/p/oYPEwke2Agb/
+
+rct
+/dashboard/p/0A5mvYEvpd9/
+
+mexico
+
+http://superset:8088/superset/dashboard/p/Ermyw96vXgW/
+
+
+swift
+
+http://superset:8088/superset/dashboard/p/rY7kxaBwWK1/
+
+
+http://superset:8088/superset/dashboard/p/zJeVxz7wrR0/
+
+
+# Shortened link for Superset Global dashboard
+    location /core {
+        rewrite ^/core$ /superset/dashboard/p/oYPEwke2Agb/ permanent;
+    }
+
+    # Shortened link for Superset South Africa RCT dashboard
+    location /sarct {
+        rewrite ^/sarct$ /superset/dashboard/p/0A5mvYEvpd9/ permanent;
+    }
+
+
+    # Shortened link for Superset Kuwait ParentApp dashboard
+    location /kuwait {
+        rewrite ^/kuwait$ /superset/dashboard/p/zJeVxz7wrR0/ permanent;
+    }
+    
+    location /mexico {
+        rewrite ^/mexico$ /superset/dashboard/p/Ermyw96vXgW/ permanent;
+    }
+
+    location /swift {
+        rewrite ^/swift$ superset/dashboard/p/rY7kxaBwWK1/ permanent;
+    }
+
+    location /palestine {
+        rewrite ^/palestine$ superset/dashboard/p/VENK2bz2lbD/ permanent;
+    }
+
+    location /crisis {
+        rewrite ^/crisis$ superset/dashboard/p/LYN823K2RW6/ permanent;
+    }
+
+
+
+    http://superset:8088/superset/dashboard/p/VENK2bz2lbD/ palestine
+
+
+
+    http://superset:8088/superset/dashboard/p/LYN823K2RW6/
