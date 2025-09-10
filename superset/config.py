@@ -2142,6 +2142,8 @@ TALISMAN_CONFIG = {
             "data:",
             "https://apachesuperset.gateway.scarf.sh",
             "https://static.scarf.sh/",
+            "https://parentingforlifelonghealth.canto.com/",
+            "https://d3opzdukpbxlns.cloudfront.net/",
             # "https://cdn.brandfolder.io", # Uncomment when SLACK_ENABLE_AVATARS is True  # noqa: E501
             "ows.terrestris.de",
             "https://cdn.document360.io",
@@ -2183,6 +2185,8 @@ TALISMAN_DEV_CONFIG = {
             "https://apachesuperset.gateway.scarf.sh",
             "https://static.scarf.sh/",
             "https://cdn.brandfolder.io",
+            "https://parentingforlifelonghealth.canto.com/",
+            "https://d3opzdukpbxlns.cloudfront.net/",
             "ows.terrestris.de",
             "https://cdn.document360.io",
         ],
