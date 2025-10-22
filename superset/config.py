@@ -555,7 +555,7 @@ DEFAULT_FEATURE_FLAGS: dict[str, bool] = {
     "CHART_PLUGINS_EXPERIMENTAL": False,
     # Experimental PyArrow engine for CSV parsing (may have issues with dates/nulls)
     # @lifecycle: development
-    "CSV_UPLOAD_PYARROW_ENGINE": False,
+    "CSV_UPLOAD_PYARROW_ENGINE": True,
     # Allow metrics and columns to be grouped into folders in the chart builder
     # @lifecycle: development
     "DATASET_FOLDERS": False,
@@ -747,7 +747,7 @@ DEFAULT_FEATURE_FLAGS: dict[str, bool] = {
     # Enable Jinja templating in SQL queries
     # @lifecycle: stable
     # @category: runtime_config
-    "ENABLE_TEMPLATE_PROCESSING": False,
+    "ENABLE_TEMPLATE_PROCESSING": TRUE,
     # Escape HTML in Markdown components (rather than rendering it)
     # @lifecycle: stable
     # @category: runtime_config
