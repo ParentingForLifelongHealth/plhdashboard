@@ -117,3 +117,7 @@ admin-user:
 docker-dev:
 	docker compose up -d 
 
+
+
+docker-prod:
+	docker compose -f docker-compose-non-dev.yml up -d --build   
