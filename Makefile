@@ -118,6 +118,10 @@ docker-dev:
 	docker compose up -d 
 
 
+
+docker-prod:
+	docker compose -f docker-compose-non-dev.yml up -d --build   
+
 # Docker Compose with auto-assigned ports (for running multiple instances)
 up:
 	./scripts/docker-compose-up.sh
