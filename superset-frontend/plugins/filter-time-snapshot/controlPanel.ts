@@ -16,24 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GenericDataType } from '@superset-ui/core';
+import { ControlPanelConfig } from '@superset-ui/chart-controls';
+import { t } from '@superset-ui/core';
 
-export const INPUT_HEIGHT = 32;
-
-export const INPUT_WIDTH = 270;
-
-export const TIME_FILTER_INPUT_WIDTH = 350;
-
-export const FILTER_SUPPORTED_TYPES = {
-  filter_time: [GenericDataType.Temporal],
-  filter_time_snapshot: [GenericDataType.Temporal],
-  filter_timegrain: [GenericDataType.Temporal],
-  filter_timecolumn: [GenericDataType.Temporal],
-  filter_select: [
-    GenericDataType.Boolean,
-    GenericDataType.String,
-    GenericDataType.Numeric,
-    GenericDataType.Temporal,
+const config: ControlPanelConfig = {
+  controlPanelSections: [
+    {
+      label: t('UI Configuration'),
+      expanded: true,
+      controlSetRows: [
+        [
+          {
+            name: 'enableEmptyFilter',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Filter value is required'),
+              default: false,
+              renderTrigger: true,
+              description: t(
+                'User must select a date before applying the filter',
+              ),
+            },
+          },
+        ],
+      ],
+    },
   ],
-  filter_range: [GenericDataType.Numeric],
 };
+
+export default config;

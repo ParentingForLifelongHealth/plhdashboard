@@ -672,7 +672,11 @@ const FiltersConfigForm = (
   const availableFilters = getAvailableFilters(filterId);
   const hasAvailableFilters = availableFilters.length > 0;
   const hasTimeDependency = availableFilters
-    .filter(filter => filter.type === 'filter_time')
+    .filter(
+      filter =>
+        filter.type === 'filter_time' ||
+        filter.type === 'filter_time_snapshot',
+    )
     .some(filter => dependencies?.includes(filter.value));
 
   useEffect(() => {
@@ -894,7 +898,8 @@ const FiltersConfigForm = (
             />
           </StyledFormItem>
         </StyledContainer>
-        {formFilter?.filterType === 'filter_time' && (
+        {(formFilter?.filterType === 'filter_time' ||
+          formFilter?.filterType === 'filter_time_snapshot') && (
           <FilterTypeInfo expanded={expanded}>
             {t(`Dashboard time range filters apply to temporal columns defined in
           the filter section of each chart. Add temporal columns to the chart
@@ -966,7 +971,8 @@ const FiltersConfigForm = (
           expandIconPosition="right"
           key={`native-filter-config-${filterId}`}
         >
-          {formFilter?.filterType !== 'filter_time' && (
+          {formFilter?.filterType !== 'filter_time' &&
+            formFilter?.filterType !== 'filter_time_snapshot' && (
             <Collapse.Panel
               forceRender
               header={FilterPanels.configuration.name}

@@ -16,24 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GenericDataType } from '@superset-ui/core';
+import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
+import controlPanel from './controlPanel';
+import transformProps from './transformProps';
+import thumbnail from 'src/filters/components/Time/images/thumbnail.png';
 
-export const INPUT_HEIGHT = 32;
+export default class TimeSnapshotFilterPlugin extends ChartPlugin {
+  constructor() {
+    const metadata = new ChartMetadata({
+      name: t('Time snapshot filter'),
+      description: t('Filter for viewing a single day snapshot of data'),
+      behaviors: [Behavior.InteractiveChart, Behavior.NativeFilter],
+      thumbnail,
+      tags: [t('Experimental')],
+      datasourceCount: 0,
+    });
 
-export const INPUT_WIDTH = 270;
-
-export const TIME_FILTER_INPUT_WIDTH = 350;
-
-export const FILTER_SUPPORTED_TYPES = {
-  filter_time: [GenericDataType.Temporal],
-  filter_time_snapshot: [GenericDataType.Temporal],
-  filter_timegrain: [GenericDataType.Temporal],
-  filter_timecolumn: [GenericDataType.Temporal],
-  filter_select: [
-    GenericDataType.Boolean,
-    GenericDataType.String,
-    GenericDataType.Numeric,
-    GenericDataType.Temporal,
-  ],
-  filter_range: [GenericDataType.Numeric],
-};
+    super({
+      controlPanel,
+      loadChart: () => import('./TimeSnapshotFilterPlugin'),
+      metadata,
+      transformProps,
+    });
+  }
+}
