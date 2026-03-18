@@ -72,7 +72,7 @@
     "./.storybook/**/*",
     "./webpack.config.js",
     "./webpack*.js",
-    "./package.json"
+    "./package.json",
   ],
   "references": [
     { "path": "./packages/superset-core" },
@@ -97,7 +97,8 @@
     { "path": "./plugins/plugin-chart-handlebars" },
     { "path": "./plugins/plugin-chart-pivot-table" },
     { "path": "./plugins/plugin-chart-table" },
-    { "path": "./plugins/plugin-chart-word-cloud" }
+    { "path": "./plugins/plugin-chart-word-cloud" },
+    { "path": "./plugins/filter-time-snapshot" }
   ],
   "exclude": []
 }

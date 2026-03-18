@@ -186,6 +186,7 @@ export enum FilterPlugins {
   Select = 'filter_select',
   Range = 'filter_range',
   Time = 'filter_time',
+  TimeSnapshot = 'filter_time_snapshot',
   TimeColumn = 'filter_timecolumn',
   TimeGrain = 'filter_timegrain',
 }

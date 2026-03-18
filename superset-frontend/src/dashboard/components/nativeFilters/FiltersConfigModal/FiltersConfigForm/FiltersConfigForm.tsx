@@ -711,7 +711,11 @@ const FiltersConfigForm = (
   );
   const hasAvailableFilters = availableFilters.length > 0;
   const hasTimeDependency = availableFilters
-    .filter(filter => filter.type === 'filter_time')
+    .filter(
+      filter =>
+        filter.type === 'filter_time' ||
+        filter.type === 'filter_time_snapshot',
+    )
     .some(filter => dependencies?.includes(filter.value));
 
   const extensionsRegistry = getExtensionsRegistry();
@@ -1007,7 +1011,8 @@ const FiltersConfigForm = (
                     </StyledFormItem>
                   )}
                 </StyledContainer>
-                {formFilter?.filterType === 'filter_time' && (
+                {(formFilter?.filterType === 'filter_time' ||
+          formFilter?.filterType === 'filter_time_snapshot') && (
                   <FilterTypeInfo expanded={expanded}>
                     {t(`Dashboard time range filters apply to temporal columns defined in
           the filter section of each chart. Add temporal columns to the chart
