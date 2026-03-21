@@ -72,6 +72,8 @@
     "./plugins/*/types/**/*",
     "./packages/*/test/**/*",
     "./plugins/*/test/**/*",
-    "./plugins/filter-time-snapshot/**/*"
+    "./plugins/filter-time-snapshot/**/*",
+    "./plugins/filter-ilike/**/*",
+    "./plugins/filter-array-in/**/*"
   ]
 }

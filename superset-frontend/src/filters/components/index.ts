@@ -21,4 +21,6 @@ export { default as RangeFilterPlugin } from './Range';
 export { default as TimeFilterPlugin } from './Time';
 export { default as TimeSnapshotFilterPlugin } from '../../../plugins/filter-time-snapshot';
 export { default as TimeColumnFilterPlugin } from './TimeColumn';
+export { default as IlikeFilterPlugin } from '../../../plugins/filter-ilike';
+export { default as ArrayInFilterPlugin } from '../../../plugins/filter-array-in';
 export { default as TimeGrainFilterPlugin } from './TimeGrain';

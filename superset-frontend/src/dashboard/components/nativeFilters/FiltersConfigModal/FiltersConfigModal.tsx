@@ -126,6 +126,8 @@ export const ALLOW_DEPENDENCIES = [
   'filter_select',
   'filter_time',
   'filter_time_snapshot',
+  'filter_ilike',
+  'filter_array_in',
 ];
 
 const DEFAULT_EMPTY_FILTERS: string[] = [];

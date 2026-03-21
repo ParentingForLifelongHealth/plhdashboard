@@ -16,31 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GenericDataType } from '@superset-ui/core';
+import { buildQueryContext, BuildQuery } from '@superset-ui/core';
+import { PluginFilterIlikeQueryFormData } from './types';
 
-export const INPUT_HEIGHT = 32;
+// No data is fetched by this filter — the buildQuery is required by the
+// framework when datasourceCount > 0 (i.e. when a dataset/column is configured).
+const buildQuery: BuildQuery<PluginFilterIlikeQueryFormData> = formData =>
+  buildQueryContext(formData, baseQueryObject => [
+    { ...baseQueryObject, row_limit: 1 },
+  ]);
 
-export const INPUT_WIDTH = 270;
-
-export const TIME_FILTER_INPUT_WIDTH = 350;
-
-export const FILTER_SUPPORTED_TYPES = {
-  filter_time: [GenericDataType.Temporal],
-  filter_time_snapshot: [GenericDataType.Temporal],
-  filter_timegrain: [GenericDataType.Temporal],
-  filter_timecolumn: [GenericDataType.Temporal],
-  filter_select: [
-    GenericDataType.Boolean,
-    GenericDataType.String,
-    GenericDataType.Numeric,
-    GenericDataType.Temporal,
-  ],
-  filter_range: [GenericDataType.Numeric],
-  filter_ilike: [GenericDataType.String],
-  filter_array_in: [
-    GenericDataType.Boolean,
-    GenericDataType.String,
-    GenericDataType.Numeric,
-    GenericDataType.Temporal,
-  ],
-};
+export default buildQuery;
