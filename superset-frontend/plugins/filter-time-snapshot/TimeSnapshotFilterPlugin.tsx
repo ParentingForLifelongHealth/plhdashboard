@@ -20,12 +20,13 @@ import { styled } from '@superset-ui/core';
 import { useCallback, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { DatePicker } from 'src/components/DatePicker';
-import { FilterPluginStyle } from 'src/filters/components/common';
 import { PluginFilterTimeSnapshotProps } from './types';
 
 const TIME_RANGE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-const SnapshotFilterStyles = styled(FilterPluginStyle)`
+const SnapshotFilterStyles = styled.div<{ height: number; width: number }>`
+  min-height: ${({ height }) => height}px;
+  width: ${({ width }) => (width === 0 ? '100%' : `${width}px`)};
   display: flex;
   align-items: center;
   overflow-x: auto;

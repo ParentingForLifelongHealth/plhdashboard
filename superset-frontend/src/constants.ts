@@ -189,6 +189,8 @@ export enum FilterPlugins {
   TimeSnapshot = 'filter_time_snapshot',
   TimeColumn = 'filter_timecolumn',
   TimeGrain = 'filter_timegrain',
+  Ilike = 'filter_ilike',
+  ArrayIn = 'filter_array_in',
 }
 
 export enum ChartCustomizationPlugins {

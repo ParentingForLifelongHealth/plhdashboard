@@ -16,11 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as SelectFilterPlugin } from './Select';
-export { default as RangeFilterPlugin } from './Range';
-export { default as TimeFilterPlugin } from './Time';
-export { default as TimeSnapshotFilterPlugin } from '../../../plugins/filter-time-snapshot';
-export { default as TimeColumnFilterPlugin } from './TimeColumn';
-export { default as IlikeFilterPlugin } from '../../../plugins/filter-ilike';
-export { default as ArrayInFilterPlugin } from '../../../plugins/filter-array-in';
-export { default as TimeGrainFilterPlugin } from './TimeGrain';
+import { buildQueryContext, BuildQuery } from '@superset-ui/core';
+import { PluginFilterArrayInQueryFormData } from './types';
+
+// No data is fetched by this filter — the buildQuery is required by the
+// framework when a dataset/column is configured.
+const buildQuery: BuildQuery<PluginFilterArrayInQueryFormData> = formData =>
+  buildQueryContext(formData, baseQueryObject => [
+    { ...baseQueryObject, row_limit: 1 },
+  ]);
+
+export default buildQuery;
