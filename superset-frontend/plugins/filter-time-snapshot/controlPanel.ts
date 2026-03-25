@@ -39,6 +39,20 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'defaultToToday',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Default to today'),
+              default: false,
+              renderTrigger: true,
+              description: t(
+                'Always default to the current date when the dashboard loads',
+              ),
+            },
+          },
+        ],
       ],
     },
   ],

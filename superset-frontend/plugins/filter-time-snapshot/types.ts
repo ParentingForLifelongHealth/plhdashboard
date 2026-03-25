@@ -27,6 +27,7 @@ import { PluginFilterHooks, PluginFilterStylesProps } from 'src/filters/componen
 
 interface PluginFilterTimeSnapshotCustomizeProps {
   defaultValue?: string | null;
+  defaultToToday?: boolean;
 }
 
 export type PluginFilterTimeSnapshotQueryFormData = QueryFormData &
@@ -44,4 +45,5 @@ export type PluginFilterTimeSnapshotProps = PluginFilterStylesProps & {
 
 export const DEFAULT_FORM_DATA: PluginFilterTimeSnapshotCustomizeProps = {
   defaultValue: null,
+  defaultToToday: false,
 };
