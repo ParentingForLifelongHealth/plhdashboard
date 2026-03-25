@@ -68,6 +68,8 @@ export default function TimeSnapshotFilterPlugin(
     inputRef,
   } = props;
 
+  const defaultToToday = props.formData?.defaultToToday;
+
   const handleDateChange = useCallback(
     (date: Dayjs | null): void => {
       if (date) {
@@ -87,14 +89,23 @@ export default function TimeSnapshotFilterPlugin(
   );
 
   useEffect(() => {
-    if (filterState.value) {
+    if (defaultToToday && !filterState.value) {
+      handleDateChange(dayjs());
+    } else if (filterState.value) {
       handleDateChange(dayjs(filterState.value));
     } else {
       handleDateChange(null);
     }
-  }, [filterState.value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterState.value, defaultToToday]);
 
-  const dateValue = filterState.value ? dayjs(filterState.value) : null;
+  // When defaultToToday is enabled, always show today's date if no explicit user value is set
+  const resolvedValue =
+    defaultToToday && !filterState.value
+      ? dayjs().format('YYYY-MM-DD')
+      : filterState.value;
+
+  const dateValue = resolvedValue ? dayjs(resolvedValue) : null;
 
   return props.formData?.inView ? (
     <SnapshotFilterStyles width={width} height={height}>
