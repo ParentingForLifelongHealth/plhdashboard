@@ -17,8 +17,10 @@
  * under the License.
  */
 import { styled } from '@superset-ui/core';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import dayjs, { Dayjs } from 'dayjs';
+import { updateDataMask } from 'src/dataMask/actions';
 import { DatePicker } from 'src/components/DatePicker';
 import { PluginFilterTimeSnapshotProps } from './types';
 
@@ -69,6 +71,9 @@ export default function TimeSnapshotFilterPlugin(
   } = props;
 
   const defaultToToday = props.formData?.defaultToToday;
+  const filterId = props.formData?.nativeFilterId;
+  const dispatch = useDispatch();
+  const hasInitialized = useRef(false);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null): void => {
@@ -89,17 +94,29 @@ export default function TimeSnapshotFilterPlugin(
   );
 
   useEffect(() => {
-    if (defaultToToday && !filterState.value) {
-      handleDateChange(dayjs());
-    } else if (filterState.value) {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      if (defaultToToday) {
+        const todayStr = dayjs().format('YYYY-MM-DD');
+        const mask = {
+          extraFormData: { time_range: dateToTimeRange(todayStr) },
+          filterState: { value: todayStr },
+        };
+        setDataMask(mask);
+        if (filterId) {
+          dispatch(updateDataMask(filterId, mask));
+        }
+        return;
+      }
+    }
+    if (filterState.value) {
       handleDateChange(dayjs(filterState.value));
     } else {
       handleDateChange(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterState.value, defaultToToday]);
+  }, [filterState.value, defaultToToday, filterId]);
 
-  // When defaultToToday is enabled, always show today's date if no explicit user value is set
   const resolvedValue =
     defaultToToday && !filterState.value
       ? dayjs().format('YYYY-MM-DD')
