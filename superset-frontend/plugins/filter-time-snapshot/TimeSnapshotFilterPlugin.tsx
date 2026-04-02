@@ -48,6 +48,17 @@ const ControlContainer = styled.div<{
   }
 `;
 
+// Before 8am UTC the pipeline hasn't finished loading today's data,
+// so we show yesterday's snapshot instead.
+const PIPELINE_CUTOFF_HOUR_UTC = 8;
+
+function getEffectiveDate(): Dayjs {
+  const nowUtc = dayjs().utc();
+  return nowUtc.hour() < PIPELINE_CUTOFF_HOUR_UTC
+    ? nowUtc.subtract(1, 'day')
+    : nowUtc;
+}
+
 function dateToTimeRange(dateStr: string): string {
   const start = dayjs(dateStr).startOf('day');
   const end = start.add(1, 'day');
@@ -97,7 +108,7 @@ export default function TimeSnapshotFilterPlugin(
     if (!hasInitialized.current) {
       hasInitialized.current = true;
       if (defaultToToday) {
-        const todayStr = dayjs().format('YYYY-MM-DD');
+        const todayStr = getEffectiveDate().format('YYYY-MM-DD');
         const mask = {
           extraFormData: { time_range: dateToTimeRange(todayStr) },
           filterState: { value: todayStr },
@@ -119,7 +130,7 @@ export default function TimeSnapshotFilterPlugin(
 
   const resolvedValue =
     defaultToToday && !filterState.value
-      ? dayjs().format('YYYY-MM-DD')
+      ? getEffectiveDate().format('YYYY-MM-DD')
       : filterState.value;
 
   const dateValue = resolvedValue ? dayjs(resolvedValue) : null;
