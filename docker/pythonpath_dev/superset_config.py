@@ -226,7 +226,7 @@ SUPERSET_DASHBOARD_POSITION_DATA_LIMIT = 10000000
 SQLALCHEMY_ENGINE_OPTIONS = {
     "pool_size": 30,         # Persistent connections kept open
     "max_overflow": 20,      # Extra connections allowed above pool_size
-    "pool_timeout": 60,      # Seconds to wait for a connection before error
+    "pool_timeout": 90,      # Seconds to wait for a connection before error
     "pool_recycle": 3600,    # Recycle connections after 1 hour to avoid stale connections
     "pool_pre_ping": True,   # Validate connections before use
 }
@@ -234,7 +234,7 @@ SQLALCHEMY_ENGINE_OPTIONS = {
 # Superset-native pool config keys (applied directly to the engine)
 SQLALCHEMY_POOL_SIZE = 30
 SQLALCHEMY_MAX_OVERFLOW = 20
-SQLALCHEMY_POOL_TIMEOUT = 60
+SQLALCHEMY_POOL_TIMEOUT = 90
 SQLALCHEMY_POOL_RECYCLE = 3600
 
 SUPERSET_WEBSERVER_TIMEOUT = int(timedelta(seconds=90).total_seconds())
