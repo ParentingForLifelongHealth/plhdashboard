@@ -16,12 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as SelectFilterPlugin } from './Select';
-export { default as RangeFilterPlugin } from './Range';
-export { default as TimeFilterPlugin } from './Time';
-export { default as TimeSnapshotFilterPlugin } from '../../../plugins/filter-time-snapshot';
-export { default as TimeColumnFilterPlugin } from './TimeColumn';
-export { default as IlikeFilterPlugin } from '../../../plugins/filter-ilike';
-export { default as ArrayInFilterPlugin } from '../../../plugins/filter-array-in';
-export { default as FrozenSnapshotFilterPlugin } from '../../../plugins/filter-frozen-snapshot';
-export { default as TimeGrainFilterPlugin } from './TimeGrain';
+import { buildQueryContext, BuildQuery } from '@superset-ui/core';
+import { PluginFilterFrozenSnapshotQueryFormData } from './types';
+
+// Fetches all rows from the configured frozen_dates dataset.
+// groupby holds the deployment column; frozenDateCol is added alongside it
+// so we get (deployment_id, freeze_date) pairs back.
+// groupby[0] = deployment column, groupby[1] = freeze date column.
+// Both are picked by the user from the frozen_dates dataset column picker.
+const buildQuery: BuildQuery<PluginFilterFrozenSnapshotQueryFormData> =
+  formData =>
+    buildQueryContext(formData, baseQueryObject => [
+      {
+        ...baseQueryObject,
+        metrics: [],
+        row_limit: 10000,
+        orderby: [],
+      },
+    ]);
+
+export default buildQuery;

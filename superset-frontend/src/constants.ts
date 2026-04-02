@@ -206,6 +206,7 @@ export enum FilterPlugins {
   TimeGrain = 'filter_timegrain',
   Ilike = 'filter_ilike',
   ArrayIn = 'filter_array_in',
+  FrozenSnapshot = 'filter_frozen_snapshot',
 }
 
 export enum Actions {

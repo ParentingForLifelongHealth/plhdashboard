@@ -74,6 +74,7 @@
     "./plugins/*/test/**/*",
     "./plugins/filter-time-snapshot/**/*",
     "./plugins/filter-ilike/**/*",
-    "./plugins/filter-array-in/**/*"
+    "./plugins/filter-array-in/**/*",
+    "./plugins/filter-frozen-snapshot/**/*"
   ]
 }
