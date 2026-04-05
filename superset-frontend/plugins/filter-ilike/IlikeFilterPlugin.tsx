@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { styled, t, getColumnLabel } from '@superset-ui/core';
+import { getColumnLabel } from '@superset-ui/core';
+import { styled } from '@apache-superset/core/theme';
+import { t } from '@apache-superset/core/translation';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { debounce } from 'lodash';
-import { Input } from 'src/components/Input';
+import { Input } from '@superset-ui/core/components';
 import { PluginFilterIlikeProps } from './types';
 
 const DEBOUNCE_MS = 300;

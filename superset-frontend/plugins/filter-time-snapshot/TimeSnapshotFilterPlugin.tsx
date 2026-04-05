@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { styled } from '@superset-ui/core';
+import { styled } from '@apache-superset/core/theme';
 import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import dayjs, { Dayjs } from 'dayjs';
 import { updateDataMask } from 'src/dataMask/actions';
-import { DatePicker } from 'src/components/DatePicker';
+import { DatePicker } from '@superset-ui/core/components';
 import { PluginFilterTimeSnapshotProps } from './types';
 
 const TIME_RANGE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -43,8 +43,19 @@ const ControlContainer = styled.div<{
   width: 100%;
   & > div,
   & > div:hover {
-    ${({ validateStatus, theme }) =>
-      validateStatus && `border-color: ${theme.colors[validateStatus]?.base}`}
+    ${({ validateStatus, theme }) => {
+      if (!validateStatus) return '';
+      switch (validateStatus) {
+        case 'error':
+          return `border-color: ${theme.colorError}`;
+        case 'warning':
+          return `border-color: ${theme.colorWarning}`;
+        case 'info':
+          return `border-color: ${theme.colorInfo}`;
+        default:
+          return `border-color: ${theme.colorError}`;
+      }
+    }}
   }
 `;
 

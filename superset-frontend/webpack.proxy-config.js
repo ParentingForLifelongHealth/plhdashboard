@@ -46,10 +46,10 @@ function isHTML(res) {
 }
 
 function toDevHTML(originalHtml) {
-  let html = originalHtml.replace(
-    /(<head>\s*<title>)([\s\S]*)(<\/title>)/i,
-    '$1[DEV] $2 $3',
-  );
+  // let html = originalHtml.replace(
+  //   /(<head>\s*<title>)([\s\S]*)(<\/title>)/i,
+  //   '$1[DEV] $2 $3',
+  // );
 
   // let html = originalHtml.replace(
   //   /(<head>\s*<title>)([\s\S]*)(<\/title>)/i,

@@ -747,7 +747,7 @@ DEFAULT_FEATURE_FLAGS: dict[str, bool] = {
     # Enable Jinja templating in SQL queries
     # @lifecycle: stable
     # @category: runtime_config
-    "ENABLE_TEMPLATE_PROCESSING": TRUE,
+    "ENABLE_TEMPLATE_PROCESSING": True,
     # Escape HTML in Markdown components (rather than rendering it)
     # @lifecycle: stable
     # @category: runtime_config

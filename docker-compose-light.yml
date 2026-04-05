@@ -85,7 +85,7 @@ services:
         required: true
       - path: docker/.env-local # optional override
         required: false
-    image: postgres:17
+    image: postgres:16
     restart: unless-stopped
     volumes:
       - db_home_light:/var/lib/postgresql/data
@@ -163,7 +163,7 @@ services:
       WEBPACK_DEVSERVER_HOST: "${WEBPACK_DEVSERVER_HOST:-0.0.0.0}"
       WEBPACK_DEVSERVER_PORT: "${WEBPACK_DEVSERVER_PORT:-9000}"
     ports:
-      - "${NODE_PORT:-9001}:9000"  # Parameterized port, accessible on all interfaces
+      - "${NODE_PORT:-9009}:9000"  # Parameterized port, accessible on all interfaces
     command: ["/app/docker/docker-frontend.sh"]
     env_file:
       - path: docker/.env # default

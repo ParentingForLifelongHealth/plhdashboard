@@ -28,6 +28,7 @@ x-superset-volumes:
   &superset-volumes # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   - ./docker:/app/docker
   - superset_home:/app/superset_home
+  - ./superset-frontend/packages/superset-ui-core/src/components/assets/images/loading.svg:/app/superset-frontend/packages/superset-ui-core/src/components/assets/images/loading.svg:ro
 
 x-common-build: &common-build
   context: .
@@ -52,7 +53,7 @@ services:
         required: true
       - path: docker/.env-local # optional override
         required: false
-    image: postgres:17
+    image: postgres:16
     container_name: superset_db
     restart: unless-stopped
     volumes:
@@ -60,6 +61,12 @@ services:
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-superset} -d ${POSTGRES_DB:-superset}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 
   superset:
@@ -96,7 +103,7 @@ services:
         required: false
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
       redis:
         condition: service_started
     user: "root"

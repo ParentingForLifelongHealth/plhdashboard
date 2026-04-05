@@ -16,9 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { styled, t, getColumnLabel } from '@superset-ui/core';
+import { getColumnLabel } from '@superset-ui/core';
+import { styled } from '@apache-superset/core/theme';
+import { t } from '@apache-superset/core/translation';
 import { useCallback } from 'react';
-import { Select } from 'antd-v5';
+import { Select } from '@superset-ui/core/components';
 import { PluginFilterArrayInProps } from './types';
 
 const FilterPluginStyle = styled.div<{ height: number; width: number }>`

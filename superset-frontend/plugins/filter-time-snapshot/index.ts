@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Behavior, ChartMetadata, ChartPlugin, t } from '@superset-ui/core';
+import { Behavior, ChartMetadata, ChartPlugin } from '@superset-ui/core';
+import { t } from '@apache-superset/core/translation';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 import thumbnail from 'src/filters/components/Time/images/thumbnail.png';
