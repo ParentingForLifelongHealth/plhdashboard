@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bumblebee">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLH DASHBOARD — Global Reach &amp; Dashboards</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="landing_dashboards.js"></script>
+  <link rel="stylesheet" href="landing_main.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="brand">
+    <img src="https://plhdashboard.org/static/assets/images/superset-logo-horiz.png" alt="PLH Dashboard" class="brand-logo" />
+  </a>
+  <div class="brand-pipe"></div>
+  <span class="brand-sub" id="nav-sub"></span>
+  <div class="nav-spacer"></div>
+  <!-- <a href="https://plhdashboard.org/dashboard/list/" class="nav-link">Dashboards</a> -->
+  <a href="#dashboards" class="nav-link">Dashboards</a>
+  <!-- <a href="#" class="nav-cta">Sign in</a> -->
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="g-gold-bar"></div><div class="g-sky-bar"></div>
+  <div class="g-sky-patch"></div><div class="g-tri-r"></div>
+  <div class="g-circle-lg"></div><div class="g-circle-sm"></div><div class="g-stripes"></div>
+  <div class="hero-inner fu d0" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <h1>Programme <em>Monitoring</em> Dashboards</h1>
+    <!-- <span class="hero-eyebrow" style="margin-bottom:0;">Powered by Apache Superset</span> -->
+    <p class="hero-hint" id="hero-hint" style="margin-left:auto;"></p>
+  </div>
+</section>
+
+<!-- FEATURED MAP EMBED -->
+<section class="embed-section fu d1">
+  <div class="embed-inner">
+
+    <!-- Shared header -->
+    <div class="embed-header">
+      <div>
+        <div class="embed-heading">Global Reach</div>
+        <div class="embed-heading-bar"></div>
+      </div>
+      <a href="https://plhdashboard.org/superset/explore/p/0L1wx5gdlB9/"
+         target="_blank" rel="noopener" class="embed-open-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open full dashboard
+      </a>
+    </div>
+
+    <div class="embed-row">
+
+      <!-- TOTAL REACH NUMBER -->
+      <div class="embed-col-stat">
+        <div class="stat-card-label">
+          <div class="stat-card-title">Total Reach</div>
+        </div>
+        <div class="embed-frame-square">
+          <div class="embed-loading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            Loading…
+          </div>
+          <iframe
+            src="https://plhdashboard.org/superset/explore/p/MD03Q4QdXOm/?standalone=1&height=400"
+            seamless frameborder="0" scrolling="no"
+            onload="this.classList.add('loaded')"
+            title="Total Reach"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- MAP -->
+      <div class="embed-col embed-col-map">
+        <div class="embed-frame-wrap">
+          <div class="embed-loading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            Loading dashboard…
+          </div>
+          <iframe
+            src="https://plhdashboard.org/superset/explore/p/LxAgRmxl3pZ/?standalone=1&height=500"
+            seamless frameborder="0" scrolling="no"
+            onload="this.classList.add('loaded')"
+            title="Global Reach Map"
+          ></iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- TOOLBAR -->
+<div class="toolbar" id="dashboards">
+  <div class="tb-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search-input" placeholder="Search dashboards…" oninput="applyFilters();" />
+  </div>
+  <div class="tb-filters" id="tb-filters"></div>
+  <div class="tb-spacer"></div>
+  <div class="tb-count"><span id="tb-count">—</span> dashboards</div>
+  <div class="view-toggle">
+    <button class="view-btn" id="vbtn-list"    onclick="setView('list')"    title="List view">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    </button>
+    <button class="view-btn active" id="vbtn-compact" onclick="setView('compact')" title="Tile view">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="view-btn" id="vbtn-grouped" onclick="setView('grouped')" title="Group by category">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="17" width="18" height="4" rx="1"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- CONTENT AREA -->
+<div class="main-wrap">
+
+  <!-- VIEW 1: LIST -->
+  <div id="view-list" class="view-list">
+    <div class="list-table">
+      <div class="list-thead">
+        <div class="th"></div>
+        <div class="th">Dashboard</div>
+        <div class="th">Category</div>
+        <div class="th">Action</div>
+      </div>
+      <div id="list-body"></div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: COMPACT TILES -->
+  <div id="view-compact" class="view-compact">
+    <div class="compact-grid" id="compact-body"></div>
+  </div>
+
+  <!-- VIEW 3: GROUPED -->
+  <div id="view-grouped" class="view-grouped">
+    <div id="grouped-body"></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="foot-l"><strong id="footer-name"></strong></div>
+  <a href="https://superset.apache.org" class="foot-r" id="footer-copy"></a>
+</footer>
+
+<script>
+let allDashboards  = [];
+let currentView    = 'list';
+let activeTag      = 'All';
+const delays       = ['d0','d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13'];
+
+// Tag → Lucide icon for group headers
+const tagIcons = {
+  'Country':   'map-pin',
+  'Global':    'globe',
+  'App':       'smartphone',
+  'Programme': 'users',
+  'Research':  'activity',
+  'Crisis':    'alert-triangle',
+  'Delivery':  'presentation',
+};
+
+// ── View switching ─────────────────────────────────────────
+function setView(view) {
+  currentView = view;
+  ['list','compact','grouped'].forEach(v => {
+    document.getElementById('view-' + v).style.display = v === view ? 'block' : 'none';
+    document.getElementById('vbtn-' + v).classList.toggle('active', v === view);
+  });
+  render(filtered());
+}
+
+// ── Filtering ──────────────────────────────────────────────
+function filtered() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  return allDashboards.filter(d => {
+    const matchTag = activeTag === 'All' || d.tag === activeTag;
+    const matchQ   = !q ||
+      d.name.toLowerCase().includes(q) ||
+      d.tag.toLowerCase().includes(q)  ||
+      d.desc.toLowerCase().includes(q);
+    return matchTag && matchQ;
+  });
+}
+
+function applyFilters() { render(filtered()); }
+
+// ── Hero search — syncs with toolbar input ─────────────────
+function heroSearch(val) {
+  document.getElementById('search-input').value = val;
+  const list = filtered();
+  const hint = document.getElementById('hero-hint');
+  hint.textContent = val.trim()
+    ? `${list.length} dashboard${list.length !== 1 ? 's' : ''} found`
+    : '';
+  render(list);
+  if (val.trim()) {
+    document.getElementById('dashboards').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ── Render dispatcher ──────────────────────────────────────
+function render(list) {
+  document.getElementById('tb-count').textContent = list.length;
+  if (currentView === 'list')    renderList(list);
+  if (currentView === 'compact') renderCompact(list);
+  if (currentView === 'grouped') renderGrouped(list);
+}
+
+// ── VIEW 1: List ───────────────────────────────────────────
+function renderList(list) {
+  const body = document.getElementById('list-body');
+  body.innerHTML = '';
+  if (!list.length) { body.innerHTML = '<div class="empty-state">No dashboards match your search.</div>'; lucide.createIcons(); return; }
+  list.forEach((d, i) => {
+    const a = document.createElement('a');
+    a.href = d.url;
+    a.className = `list-row fu ${delays[i % delays.length]}`;
+    a.innerHTML = `
+      <div class="lr-icon icon-${d.accent}"><i data-lucide="${d.icon}"></i></div>
+      <div>
+        <div class="lr-name">${d.name}</div>
+        <div class="lr-desc">${d.desc}</div>
+      </div>
+      <div><span class="lr-tag">${d.tag}</span></div>
+      <div class="lr-open">Open <i data-lucide="arrow-right"></i></div>
+    `;
+    body.appendChild(a);
+  });
+  lucide.createIcons();
+}
+
+// ── VIEW 2: Compact tiles ──────────────────────────────────
+function renderCompact(list) {
+  const body = document.getElementById('compact-body');
+  body.innerHTML = '';
+  if (!list.length) { body.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No dashboards match your search.</div>'; lucide.createIcons(); return; }
+  list.forEach((d, i) => {
+    const a = document.createElement('a');
+    a.href = d.url;
+    a.className = `compact-tile ct-${d.accent} fu ${delays[i % delays.length]}`;
+    a.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="ct-icon bg-${d.accent}"><i data-lucide="${d.icon}"></i></div>
+        <div class="ct-tag">${d.tag}</div>
+      </div>
+      <div class="ct-name">${d.name}</div>
+      <div class="ct-open">Open Dashboard <i data-lucide="arrow-right"></i></div>
+    `;
+    body.appendChild(a);
+  });
+  lucide.createIcons();
+}
+
+// ── VIEW 3: Grouped by category ────────────────────────────
+function renderGrouped(list) {
+  const body = document.getElementById('grouped-body');
+  body.innerHTML = '';
+  if (!list.length) { body.innerHTML = '<div class="empty-state">No dashboards match your search.</div>'; lucide.createIcons(); return; }
+
+  const groups = {};
+  list.forEach(d => { (groups[d.tag] = groups[d.tag] || []).push(d); });
+
+  Object.entries(groups).forEach(([tag, items], gi) => {
+    const icon = tagIcons[tag] || 'layout-dashboard';
+    const section = document.createElement('div');
+    section.className = `group-section fu d${gi % delays.length}`;
+    section.innerHTML = `
+      <div class="group-header">
+        <div class="group-icon"><i data-lucide="${icon}"></i></div>
+        <div class="group-title">${tag}</div>
+        <div class="group-count">${items.length}</div>
+        <div class="group-line"></div>
+      </div>
+      <div class="group-items" id="grp-${gi}"></div>
+    `;
+    body.appendChild(section);
+
+    const itemsEl = section.querySelector('.group-items');
+    items.forEach((d, ii) => {
+      const a = document.createElement('a');
+      a.href = d.url;
+      a.className = `group-item fu ${delays[ii % delays.length]}`;
+      a.innerHTML = `
+        <div class="gi-icon icon-${d.accent}"><i data-lucide="${d.icon}"></i></div>
+        <div class="gi-body">
+          <div class="gi-name">${d.name}</div>
+          <div class="gi-desc">${d.desc}</div>
+        </div>
+        <div class="gi-arrow"><i data-lucide="chevron-right"></i></div>
+      `;
+      itemsEl.appendChild(a);
+    });
+  });
+  lucide.createIcons();
+}
+
+// ── Build filter tabs ──────────────────────────────────────
+function buildTabs(dashboards) {
+  const allTags = ['All', ...new Set(dashboards.map(d => d.tag))];
+  const el = document.getElementById('tb-filters');
+  el.innerHTML = '';
+  allTags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'tb-tab' + (tag === 'All' ? ' active' : '');
+    btn.textContent = tag;
+    btn.onclick = () => {
+      activeTag = tag;
+      document.querySelectorAll('.tb-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('search-input').value = '';
+      render(filtered());
+    };
+    el.appendChild(btn);
+  });
+}
+
+// ── Load data from landing_dashboards.js (works with file:// and web server) ──
+const { site, dashboards } = window.PLH_DATA;
+allDashboards = dashboards;
+
+document.title = site.name + ' — M&E Dashboards';
+document.getElementById('nav-sub').textContent     = site.subtitle;
+document.getElementById('footer-name').textContent = site.name;
+document.getElementById('footer-copy').textContent =
+  `© ${new Date().getFullYear()}`;
+
+buildTabs(dashboards);
+setView('compact'); // default view
+</script>
+</body>
+</html>
