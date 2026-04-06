@@ -61,7 +61,7 @@ const ControlContainer = styled.div<{
 
 // Before 8am UTC the pipeline hasn't finished loading today's data,
 // so we show yesterday's snapshot instead.
-const PIPELINE_CUTOFF_HOUR_UTC = 8;
+const PIPELINE_CUTOFF_HOUR_UTC = 5;
 
 function getEffectiveDate(): Dayjs {
   const nowUtc = dayjs().utc();
