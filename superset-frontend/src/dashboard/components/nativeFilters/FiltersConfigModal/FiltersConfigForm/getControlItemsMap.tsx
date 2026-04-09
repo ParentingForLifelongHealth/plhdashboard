@@ -22,6 +22,7 @@ import {
   Checkbox,
   FormItem,
   InfoTooltip,
+  Input,
   Tooltip,
   type FormInstance,
 } from '@superset-ui/core/components';
@@ -173,7 +174,38 @@ export default function getControlItemsMap({
         filterToEdit?.controlValues?.[controlItem.name] ??
         customizationToEdit?.controlValues?.[controlItem.name] ??
         controlItem?.config?.default;
-      const element = (
+
+      const isTextControl = controlItem?.config?.type === 'TextControl';
+
+      const element = isTextControl ? (
+        <>
+          <StyledRowFormItem
+            expanded={expanded}
+            key={controlItem.name}
+            name={['filters', filterId, 'controlValues', controlItem.name]}
+            initialValue={initialValue}
+            colon={false}
+            label={
+              <StyledLabel>
+                {controlItem.config.label}&nbsp;
+                {controlItem.config.description && (
+                  <InfoTooltip
+                    placement="top"
+                    tooltip={controlItem.config.description}
+                  />
+                )}
+              </StyledLabel>
+            }
+          >
+            <Input
+              onChange={() => {
+                formChanged();
+                forceUpdate();
+              }}
+            />
+          </StyledRowFormItem>
+        </>
+      ) : (
         <>
           <CleanFormItem
             name={['filters', filterId, 'requiredFirst', controlItem.name]}
