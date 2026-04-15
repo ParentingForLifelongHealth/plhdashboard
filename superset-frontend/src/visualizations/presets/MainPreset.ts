@@ -76,6 +76,7 @@ import {
   TimeFilterPlugin,
   TimeSnapshotFilterPlugin,
   FrozenSnapshotFilterPlugin,
+  ColumnSnapshotFilterPlugin,
   TimeColumnFilterPlugin,
   TimeGrainFilterPlugin,
 } from 'src/filters/components';
@@ -181,6 +182,9 @@ export default class MainPreset extends Preset {
         }),
         new FrozenSnapshotFilterPlugin().configure({
           key: FilterPlugins.FrozenSnapshot,
+        }),
+        new ColumnSnapshotFilterPlugin().configure({
+          key: FilterPlugins.ColumnSnapshot,
         }),
         new TimeColumnFilterPlugin().configure({
           key: FilterPlugins.TimeColumn,
