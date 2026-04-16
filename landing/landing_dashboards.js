@@ -27,7 +27,7 @@ window.PLH_DATA = {
       accent: "gold"
     },
     {
-      name:   "ParentText Crisis — Global",
+      name:   "Parenting in Crisis - Global",
       desc:   "Global crisis support metrics aggregated across all ParentText crisis contexts.",
       url:    "https://plhdashboard.org/crisis",
       icon:   "life-buoy",
@@ -39,11 +39,11 @@ window.PLH_DATA = {
       desc:   "Monitoring data for the Malaysian Kemas and MASW programme adaptations.",
       url:    "https://plhdashboard.org/malaysia",
       icon:   "map",
-      tag:    "Country",
+      tag:    "Programme",
       accent: "gold"
     },
     {
-      name:   "ParentText Crisis — World Vision",
+      name:   "Parenting in Crisis - World Vision",
       desc:   "Crisis support metrics for the World Vision ParentText deployment.",
       url:    "https://plhdashboard.org/wvi",
       icon:   "shield",
@@ -55,7 +55,7 @@ window.PLH_DATA = {
       desc:   "Programme reach and session data for Crianza Con Conciencia+ cohorts.",
       url:    "https://plhdashboard.org/mexico",
       icon:   "book-open",
-      tag:    "Country",
+      tag:    "Programme",
       accent: "sky"
     },
     {
@@ -63,52 +63,44 @@ window.PLH_DATA = {
       desc:   "Spanish-language view of Crianza Con Conciencia+ programme data.",
       url:    "https://plhdashboard.org/mexico-es",
       icon:   "languages",
-      tag:    "Country",
+      tag:    "Programme",
       accent: "sky"
     },
    
     {
-      name:   "ParentApp SA",
+      name:   "ParentApp - South Africa",
       desc:   "User engagement and retention for the South Africa ParentApp deployment.",
       url:    "https://plhdashboard.org/sapa",
       icon:   "smartphone",
-      tag:    "App",
+      tag:    "Programme",
       accent: "sky"
     },
     {
-      name:   "Facilitator App",
-      desc:   "Facilitator activity and session completion metrics across programmes.",
-      url:    "https://plhdashboard.org/faciapp",
-      icon:   "presentation",
-      tag:    "Delivery",
-      accent: "gold"
-    },
-    {
-      name:   "ParentApp Kuwait",
+      name:   "ParentApp - Kuwait",
       desc:   "User engagement and retention for the Kuwait ParentApp deployment.",
       url:    "https://plhdashboard.org/kuwait",
       icon:   "tablet",
-      tag:    "App",
+      tag:    "Programme",
       accent: "sky"
     },
     {
-      name:   "SWIFT RCT",
+      name:   "SWIFT RCT - South Africa",
       desc:   "Randomised controlled trial outcomes and follow-up data for SWIFT.",
       url:    "https://plhdashboard.org/swiftrct",
       icon:   "clipboard-list",
-      tag:    "Research",
+      tag:    "Programme",
       accent: "red"
     },
     {
-      name:   "South Africa RCT",
-      desc:   "RCT monitoring, enrolment, and outcome data for South Africa.",
+      name:   "5DAY UX RCT - South Africa",
+      desc:   "RCT monitoring, enrolment, and outcome data for the 5-Day UX trial.",
       url:    "https://plhdashboard.org/sarct",
       icon:   "bar-chart-2",
-      tag:    "Research",
+      tag:    "Programme",
       accent: "red"
     },
     {
-      name:   "ParentText Crisis — Palestine",
+      name:   "Parenting in Crisis - Palestine",
       desc:   "Crisis support reach and engagement metrics for Palestine.",
       url:    "https://plhdashboard.org/palestine",
       icon:   "phone-call",
@@ -116,12 +108,52 @@ window.PLH_DATA = {
       accent: "red"
     },
     {
-      name:   "Crianza Responsable — Panama",
-      desc:   "Programme reach and session completion for Crianza Responsable y Amorosa Panama.",
-      url:    "https://plhdashboard.org/panama",
-      icon:   "heart",
+      name:   "ParentApp - Global",
+      desc:   "User engagement and reach across all global ParentApp deployments.",
+      url:    "https://plhdashboard.org/parentapp",
+      icon:   "globe",
+      tag:    "Global",
+      accent: "gold"
+    },
+    {
+      name:   "ParentApp - Tanzania",
+      desc:   "User engagement and retention for the Tanzania ParentApp deployment.",
+      url:    "https://plhdashboard.org/tanzania",
+      icon:   "smartphone",
       tag:    "Programme",
       accent: "sky"
+    },
+    {
+      name:   "SWIFT - South Africa",
+      desc:   "Programme monitoring and delivery data for SWIFT South Africa.",
+      url:    "https://plhdashboard.org/swift",
+      icon:   "activity",
+      tag:    "Programme",
+      accent: "sky"
+    },
+    {
+      name:   "Facilitator App - Philippines",
+      desc:   "Facilitator activity and session completion for the Philippines deployment.",
+      url:    "https://plhdashboard.org/philippines",
+      icon:   "presentation",
+      tag:    "Programme",
+      accent: "gold"
+    },
+    {
+      name:   "ParentApp - Malaysia (NK)",
+      desc:   "User engagement and retention for the NK Malaysia ParentApp deployment.",
+      url:    "https://plhdashboard.org/nkapp",
+      icon:   "tablet",
+      tag:    "Programme",
+      accent: "sky"
+    },
+    {
+      name:   "Facilitator App - Curaçao",
+      desc:   "Facilitator activity and session completion for the Curaçao deployment.",
+      url:    "https://plhdashboard.org/curacao",
+      icon:   "users",
+      tag:    "Programme",
+      accent: "gold"
     }
   ]
 };

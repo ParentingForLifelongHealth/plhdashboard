@@ -227,6 +227,25 @@ h1,h2,h3 { font-family: 'Montserrat', sans-serif; }
 }
 .embed-open-link svg { width: 13px; height: 13px; }
 .embed-open-link:hover { background: var(--sky-l); border-color: var(--sky); }
+.embed-collapse-btn {
+  height: 34px; padding: 0 14px; gap: 6px; border-radius: 6px;
+  border: 1.5px solid rgba(75,170,200,.3);
+  background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--sky); transition: background .14s, border-color .14s, color .14s;
+  font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  flex-shrink: 0; white-space: nowrap;
+}
+.embed-collapse-btn svg { width: 15px; height: 15px; transition: transform .25s ease; }
+.embed-collapse-btn:hover { background: var(--sky-l); border-color: var(--sky); }
+.embed-collapse-btn.collapsed svg { transform: rotate(180deg); }
+.embed-row {
+  overflow: hidden;
+  transition: max-height .35s ease, opacity .3s ease, margin-top .3s ease;
+  max-height: 600px; opacity: 1;
+}
+.embed-row.collapsed { max-height: 0; opacity: 0; margin-top: 0 !important; }
 .embed-frame-wrap {
   position: relative;
   border-radius: 10px;
