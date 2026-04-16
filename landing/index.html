@@ -111,6 +111,8 @@
     <input type="text" id="search-input" placeholder="Search dashboards…" oninput="applyFilters();" />
   </div>
   <div class="tb-filters" id="tb-filters"></div>
+  <div class="tb-filters-sep" id="tb-filters-sep" style="display:none"></div>
+  <div class="tb-filters tb-filters-apps" id="tb-filters-apps"></div>
   <div class="tb-spacer"></div>
   <div class="tb-count"><span id="tb-count">—</span> dashboards</div>
   <div class="view-toggle">
@@ -175,17 +177,21 @@ function toggleGlobalReach() {
 let allDashboards  = [];
 let currentView    = 'list';
 let activeTag      = 'All';
+let activeAppTag   = null; // null = no secondary filter
 const delays       = ['d0','d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13'];
 
 // Tag → Lucide icon for group headers
 const tagIcons = {
-  'Country':   'map-pin',
-  'Global':    'globe',
-  'App':       'smartphone',
-  'Programme': 'users',
-  'Research':  'activity',
-  'Crisis':    'alert-triangle',
-  'Delivery':  'presentation',
+  'Country':    'map-pin',
+  'Global':     'globe',
+  'App':        'smartphone',
+  'Programme':  'users',
+  'Research':   'activity',
+  'Crisis':     'alert-triangle',
+  'Delivery':   'presentation',
+  'ParentApp':  'smartphone',
+  'FaciApp':    'presentation',
+  'ParentText': 'message-circle',
 };
 
 // ── View switching ─────────────────────────────────────────
@@ -202,12 +208,14 @@ function setView(view) {
 function filtered() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   return allDashboards.filter(d => {
-    const matchTag = activeTag === 'All' || d.tag === activeTag;
-    const matchQ   = !q ||
+    const matchTag    = activeTag === 'All' || d.tag === activeTag;
+    const matchAppTag = !activeAppTag || d.appType === activeAppTag;
+    const matchQ      = !q ||
       d.name.toLowerCase().includes(q) ||
       d.tag.toLowerCase().includes(q)  ||
+      (d.appType || '').toLowerCase().includes(q) ||
       d.desc.toLowerCase().includes(q);
-    return matchTag && matchQ;
+    return matchTag && matchAppTag && matchQ;
   });
 }
 
@@ -325,22 +333,61 @@ function renderGrouped(list) {
 
 // ── Build filter tabs ──────────────────────────────────────
 function buildTabs(dashboards) {
-  const allTags = ['All', ...new Set(dashboards.map(d => d.tag))];
-  const el = document.getElementById('tb-filters');
-  el.innerHTML = '';
-  allTags.forEach(tag => {
+  // Primary tabs — derived from d.tag
+  const primaryTags = ['All', ...new Set(dashboards.map(d => d.tag))];
+  const elGeneral   = document.getElementById('tb-filters');
+  elGeneral.innerHTML = '';
+  primaryTags.forEach(tag => {
     const btn = document.createElement('button');
     btn.className = 'tb-tab' + (tag === 'All' ? ' active' : '');
     btn.textContent = tag;
     btn.onclick = () => {
-      activeTag = tag;
-      document.querySelectorAll('.tb-tab').forEach(b => b.classList.remove('active'));
+      activeTag    = tag;
+      activeAppTag = null;
+      document.querySelectorAll('#tb-filters .tb-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#tb-filters-apps .tb-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('search-input').value = '';
       render(filtered());
     };
-    el.appendChild(btn);
+    elGeneral.appendChild(btn);
   });
+
+  // Secondary tabs — derived from d.appType; clicking toggles
+  const appTypes = [...new Set(dashboards.map(d => d.appType).filter(Boolean))];
+  const elApps   = document.getElementById('tb-filters-apps');
+  const elSep    = document.getElementById('tb-filters-sep');
+  elApps.innerHTML = '';
+  if (appTypes.length) {
+    appTypes.forEach(type => {
+      const btn = document.createElement('button');
+      btn.className = 'tb-tab';
+      btn.textContent = type;
+      btn.onclick = () => {
+        if (activeAppTag === type) {
+          // Toggle off — restore primary to All
+          activeAppTag = null;
+          activeTag    = 'All';
+          btn.classList.remove('active');
+          document.querySelectorAll('#tb-filters .tb-tab').forEach(b => b.classList.remove('active'));
+          document.querySelector('#tb-filters .tb-tab').classList.add('active'); // "All" is first
+        } else {
+          activeAppTag = type;
+          activeTag    = 'All';
+          document.querySelectorAll('#tb-filters-apps .tb-tab').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('#tb-filters .tb-tab').forEach(b => b.classList.remove('active'));
+          document.querySelector('#tb-filters .tb-tab').classList.add('active'); // reset primary to All
+          btn.classList.add('active');
+        }
+        document.getElementById('search-input').value = '';
+        render(filtered());
+      };
+      elApps.appendChild(btn);
+    });
+    elSep.style.display = '';
+  } else {
+    elSep.style.display = 'none';
+  }
 }
 
 // ── Load data from landing_dashboards.js (works with file:// and web server) ──
