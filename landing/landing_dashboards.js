@@ -107,14 +107,14 @@ window.PLH_DATA = {
       tag:    "Crisis",
       accent: "red"
     },
-    {
-      name:   "ParentApp - Global",
-      desc:   "User engagement and reach across all global ParentApp deployments.",
-      url:    "https://plhdashboard.org/parentapp",
-      icon:   "globe",
-      tag:    "Global",
-      accent: "gold"
-    },
+    // {
+    //   name:   "ParentApp - Global",
+    //   desc:   "User engagement and reach across all global ParentApp deployments.",
+    //   url:    "https://plhdashboard.org/parentapp",
+    //   icon:   "globe",
+    //   tag:    "Global",
+    //   accent: "gold"
+    // },
     {
       name:   "ParentApp - Tanzania",
       desc:   "User engagement and retention for the Tanzania ParentApp deployment.",
@@ -139,14 +139,14 @@ window.PLH_DATA = {
       tag:    "Programme",
       accent: "gold"
     },
-    {
-      name:   "ParentApp - Malaysia (NK)",
-      desc:   "User engagement and retention for the NK Malaysia ParentApp deployment.",
-      url:    "https://plhdashboard.org/nkapp",
-      icon:   "tablet",
-      tag:    "Programme",
-      accent: "sky"
-    },
+    // {
+    //   name:   "ParentApp - Malaysia (NK)",
+    //   desc:   "User engagement and retention for the NK Malaysia ParentApp deployment.",
+    //   url:    "https://plhdashboard.org/nkapp",
+    //   icon:   "tablet",
+    //   tag:    "Programme",
+    //   accent: "sky"
+    // },
     {
       name:   "Facilitator App - Curaçao",
       desc:   "Facilitator activity and session completion for the Curaçao deployment.",
