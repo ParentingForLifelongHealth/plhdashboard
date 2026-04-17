@@ -169,7 +169,7 @@ window.PLH_DATA = {
       url:     "https://plhdashboard.org/curacao",
       icon:    "users",
       tag:     "Programme",
-      appType: "FaciApp",
+      appType: "Facilitator App",
       accent:  "gold"
     }
   ]

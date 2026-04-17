@@ -323,6 +323,10 @@ h1,h2,h3 { font-family: 'Montserrat', sans-serif; }
   border-right: 1px solid var(--border);
   background: #fff; overflow: hidden;
 }
+.sidebar-heading {
+  padding: 16px 16px 12px;
+  flex-shrink: 0;
+}
 .sidebar-toolbar {
   padding: 10px 12px; border-bottom: 1px solid var(--border);
   flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; background: #fff;
