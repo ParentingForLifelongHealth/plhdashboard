@@ -43,7 +43,7 @@ window.PLH_DATA = {
       url:     "https://plhdashboard.org/malaysia",
       icon:    "map",
       tag:     "Programme",
-      appType: "ParentText",
+      appType: "ParentText|Facilitator App",
       accent:  "gold"
     },
     {
@@ -61,7 +61,7 @@ window.PLH_DATA = {
       url:     "https://plhdashboard.org/mexico",
       icon:    "book-open",
       tag:     "Programme",
-      appType: "ParentText",
+      appType: "ParentText|Facilitator App",
       accent:  "sky"
     },
     {
@@ -70,7 +70,7 @@ window.PLH_DATA = {
       url:     "https://plhdashboard.org/mexico-es",
       icon:    "languages",
       tag:     "Programme",
-      appType: "ParentText",
+      appType: "ParentText|Facilitator App",
       accent:  "sky"
     },
     {
@@ -151,7 +151,7 @@ window.PLH_DATA = {
       url:     "https://plhdashboard.org/philippines",
       icon:    "presentation",
       tag:     "Programme",
-      appType: "FaciApp",
+      appType: "Facilitator App",
       accent:  "gold"
     },
     // {

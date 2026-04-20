@@ -146,7 +146,7 @@ function filtered() {
   const q = document.getElementById('search-input').value.toLowerCase().trim();
   return allDashboards.filter(d => {
     const matchTag    = activeTag === 'All' || d.tag === activeTag;
-    const matchAppTag = !activeAppTag || d.appType === activeAppTag;
+    const matchAppTag = !activeAppTag || (d.appType || '').split('|').map(t => t.trim()).includes(activeAppTag);
     const matchQ      = !q ||
       d.name.toLowerCase().includes(q) ||
       d.tag.toLowerCase().includes(q)  ||
@@ -188,7 +188,7 @@ function renderList(list) {
       <div class="gi-icon icon-${d.accent}"><i data-lucide="${d.icon}"></i></div>
       <div class="gi-body">
         <div class="gi-name">${d.name}</div>
-        <div class="gi-desc">${d.tag}${d.appType ? ' · ' + d.appType : ''}</div>
+        <div class="gi-desc">${d.tag}${d.appType ? ' · ' + d.appType.split('|').map(t => t.trim()).join(' · ') : ''}</div>
       </div>
       <div class="gi-arrow"><i data-lucide="chevron-right"></i></div>
     `;
@@ -250,7 +250,7 @@ function renderGrouped(list) {
         <div class="gi-icon icon-${d.accent}"><i data-lucide="${d.icon}"></i></div>
         <div class="gi-body">
           <div class="gi-name">${d.name}</div>
-          <div class="gi-desc">${d.appType || d.tag}</div>
+          <div class="gi-desc">${d.appType ? d.appType.split('|').map(t => t.trim()).join(' · ') : d.tag}</div>
         </div>
         <div class="gi-arrow"><i data-lucide="chevron-right"></i></div>
       `;
@@ -283,7 +283,7 @@ function buildTabs(dashboards) {
     elTag.appendChild(btn);
   });
 
-  const appTypes = [...new Set(dashboards.map(d => d.appType).filter(Boolean))];
+  const appTypes = [...new Set(dashboards.flatMap(d => (d.appType || '').split('|').map(t => t.trim())).filter(Boolean))];
   const elApp    = document.getElementById('tb-filters-apps');
   elApp.innerHTML = '';
   appTypes.forEach(type => {
