@@ -110,9 +110,16 @@ FEATURE_FLAGS = {"ALERT_REPORTS": True, "DATASET_FOLDERS": True}
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
 WEBDRIVER_BASEURL = f"http://superset_app{os.environ.get('SUPERSET_APP_ROOT', '/')}/"  # When using docker compose baseurl should be http://superset_nginx{ENV{BASEPATH}}/  # noqa: E501
 # The base URL for the email report hyperlinks.
-WEBDRIVER_BASEURL_USER_FRIENDLY = (
-    f"http://localhost:8888/{os.environ.get('SUPERSET_APP_ROOT', '/')}/"
-)
+WEBDRIVER_BASEURL_USER_FRIENDLY = "https://plhdashboard.org/"
+
+# Trust X-Forwarded-Proto/Host headers from nginx reverse proxy
+ENABLE_PROXY_FIX = True
+
+
+# WEBDRIVER_BASEURL_USER_FRIENDLY = (
+#     f"http://localhost:8888/{os.environ.get('SUPERSET_APP_ROOT', '/')}/"
+# )
+
 SQLLAB_CTAS_NO_LIMIT = True
 
 log_level_text = os.getenv("SUPERSET_LOG_LEVEL", "INFO")
