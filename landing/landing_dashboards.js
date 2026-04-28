@@ -128,6 +128,15 @@ window.PLH_DATA = {
     //   accent:  "gold"
     // },
     {
+      name:    "ParentApp - Malaysia (NK)",
+      desc:    "User engagement and retention for the NK Malaysia ParentApp deployment.",
+      url:     "https://plhdashboard.org/nkapp",
+      icon:    "tablet",
+      tag:     "Programme",
+      appType: "ParentApp",
+      accent:  "sky"
+    },
+    {
       name:    "ParentApp - Tanzania",
       desc:    "User engagement and retention for the Tanzania ParentApp deployment.",
       url:     "https://plhdashboard.org/tanzania",
