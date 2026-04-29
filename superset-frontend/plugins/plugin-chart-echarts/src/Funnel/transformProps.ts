@@ -239,8 +239,10 @@ export default function transformProps(
     formatter,
     show: showLabels,
     color: theme.colorText,
-    textBorderColor: theme.colorBgBase,
-    textBorderWidth: 1,
+    textBorderColor: 'transparent',
+    textBorderWidth: 0,
+    fontSize: 14,
+    fontWeight: 'bold' as const,
   };
   const legendData = keys.sort((a: string, b: string) => {
     if (!legendSort) return 0;
