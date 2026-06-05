@@ -180,6 +180,15 @@ window.PLH_DATA = {
       tag:     "Programme",
       appType: "Facilitator App",
       accent:  "gold"
+    },
+    {
+      name:    "Crianza Responsable y Amorosa - Panama",
+      desc:    "Programme reach and session data for Crianza Responsable y Amorosa Panama cohorts.",
+      url:     "https://plhdashboard.org/panama",
+      icon:    "book-open",
+      tag:     "Programme",
+      appType: "ParentText|ParentApp",
+      accent:  "sky"
     }
   ]
 };
