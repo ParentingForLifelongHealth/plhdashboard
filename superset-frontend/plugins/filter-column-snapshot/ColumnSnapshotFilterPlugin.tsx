@@ -17,7 +17,7 @@
  * under the License.
  */
 import { styled } from '@apache-superset/core/theme';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import dayjs, { Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -115,7 +115,6 @@ export default function ColumnSnapshotFilterPlugin(
   } = props.formData;
 
   const dispatch = useDispatch();
-  const hasInitialized = useRef(false);
 
   const applyDate = useCallback(
     (dateStr: string) => ({
@@ -162,17 +161,14 @@ export default function ColumnSnapshotFilterPlugin(
   );
 
   useEffect(() => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      if (defaultToToday) {
-        const todayStr = getEffectiveDate().format('YYYY-MM-DD');
-        const mask = applyDate(todayStr);
-        setDataMask(mask);
-        if (nativeFilterId) {
-          dispatch(updateDataMask(nativeFilterId, mask));
-        }
-        return;
+    if (defaultToToday && !filterState.value) {
+      const todayStr = getEffectiveDate().format('YYYY-MM-DD');
+      const mask = applyDate(todayStr);
+      setDataMask(mask);
+      if (nativeFilterId) {
+        dispatch(updateDataMask(nativeFilterId, mask));
       }
+      return;
     }
     if (filterState.value) {
       handleDateChange(dayjs(filterState.value));

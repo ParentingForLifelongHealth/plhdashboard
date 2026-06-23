@@ -17,7 +17,7 @@
  * under the License.
  */
 import { styled } from '@apache-superset/core/theme';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import dayjs, { Dayjs } from 'dayjs';
 import { updateDataMask } from 'src/dataMask/actions';
@@ -95,7 +95,6 @@ export default function TimeSnapshotFilterPlugin(
   const defaultToToday = props.formData?.defaultToToday;
   const filterId = props.formData?.nativeFilterId;
   const dispatch = useDispatch();
-  const hasInitialized = useRef(false);
 
   const handleDateChange = useCallback(
     (date: Dayjs | null): void => {
@@ -116,20 +115,17 @@ export default function TimeSnapshotFilterPlugin(
   );
 
   useEffect(() => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      if (defaultToToday) {
-        const todayStr = getEffectiveDate().format('YYYY-MM-DD');
-        const mask = {
-          extraFormData: { time_range: dateToTimeRange(todayStr) },
-          filterState: { value: todayStr },
-        };
-        setDataMask(mask);
-        if (filterId) {
-          dispatch(updateDataMask(filterId, mask));
-        }
-        return;
+    if (defaultToToday && !filterState.value) {
+      const todayStr = getEffectiveDate().format('YYYY-MM-DD');
+      const mask = {
+        extraFormData: { time_range: dateToTimeRange(todayStr) },
+        filterState: { value: todayStr },
+      };
+      setDataMask(mask);
+      if (filterId) {
+        dispatch(updateDataMask(filterId, mask));
       }
+      return;
     }
     if (filterState.value) {
       handleDateChange(dayjs(filterState.value));
