@@ -22,5 +22,6 @@ export { default as TimeFilterPlugin } from './Time';
 export { default as TimeSnapshotFilterPlugin } from '../../../plugins/filter-time-snapshot';
 export { default as FrozenSnapshotFilterPlugin } from '../../../plugins/filter-frozen-snapshot';
 export { default as ColumnSnapshotFilterPlugin } from '../../../plugins/filter-column-snapshot';
+export { default as ColumnTimeRangeFilterPlugin } from '../../../plugins/filter-column-timerange';
 export { default as TimeColumnFilterPlugin } from './TimeColumn';
 export { default as TimeGrainFilterPlugin } from './TimeGrain';

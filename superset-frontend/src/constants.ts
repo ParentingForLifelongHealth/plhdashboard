@@ -189,6 +189,7 @@ export enum FilterPlugins {
   TimeSnapshot = 'filter_time_snapshot',
   FrozenSnapshot = 'filter_frozen_snapshot',
   ColumnSnapshot = 'filter_column_snapshot',
+  ColumnTimeRange = 'filter_column_timerange',
   TimeColumn = 'filter_timecolumn',
   TimeGrain = 'filter_timegrain',
 }
