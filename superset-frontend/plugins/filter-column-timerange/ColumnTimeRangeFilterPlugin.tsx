@@ -24,7 +24,6 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { updateDataMask } from 'src/dataMask/actions';
 import DateFilterControl from 'src/explore/components/controls/DateFilterControl';
-import { dttmToDayjs } from 'src/explore/components/controls/DateFilterControl/utils/dateParser';
 import {
   Clauses,
   ExpressionTypes,
@@ -35,7 +34,7 @@ import { PluginFilterColumnTimeRangeProps } from './types';
 dayjs.extend(utc);
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const DTTM_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const DTTM_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
 const TimeRangeFilterStyles = styled(FilterPluginStyle)`
   display: flex;
@@ -90,11 +89,15 @@ function buildSqlExpression(
   timeRange: string,
   column: string,
 ): string | null {
-  const parts = timeRange.split(' : ');
-  if (parts.length !== 2) return null;
-  const [sinceStr, untilStr] = parts.map(s => s.trim());
-  const since = dttmToDayjs(sinceStr);
-  const until = dttmToDayjs(untilStr);
+  // Only handle absolute "start : end" ranges; relative/DATEADD expressions fall back to time_range
+  const sepIdx = timeRange.indexOf(' : ');
+  if (sepIdx === -1) return null;
+  const sinceStr = timeRange.slice(0, sepIdx).trim();
+  const untilStr = timeRange.slice(sepIdx + 3).trim();
+  // Reject if either part contains spaces (indicates complex expression like DATEADD)
+  if (sinceStr.includes(' ') || untilStr.includes(' ')) return null;
+  const since = dayjs(sinceStr);
+  const until = dayjs(untilStr);
   if (!since.isValid() || !until.isValid()) return null;
   return `${column} >= '${since.format(DATE_FORMAT)}' AND ${column} < '${until.format(DATE_FORMAT)}'`;
 }

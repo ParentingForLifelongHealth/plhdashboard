@@ -2167,7 +2167,7 @@ TALISMAN_CONFIG = {
             "'self'",
             *[f"https://{d}" for d in THEME_FONT_URL_ALLOWED_DOMAINS],
         ],
-        "script-src": ["'self'", "'strict-dynamic'"],
+        "script-src": ["'self'", "'strict-dynamic'", "'unsafe-eval'"],
     },
     "content_security_policy_nonce_in": ["script-src"],
     "force_https": False,

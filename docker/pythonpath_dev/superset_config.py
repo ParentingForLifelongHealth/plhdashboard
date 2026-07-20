@@ -187,7 +187,7 @@ TALISMAN_CONFIG = {
             "'self'",
             "'unsafe-inline'",
         ],
-        "script-src": ["'self'", "'strict-dynamic'"],
+        "script-src": ["'self'", "'strict-dynamic'", "'unsafe-eval'"],
     },
     "content_security_policy_nonce_in": ["script-src"],
     "force_https": False,
@@ -248,3 +248,14 @@ SQLALCHEMY_POOL_TIMEOUT = 90
 SQLALCHEMY_POOL_RECYCLE = 3600
 
 SUPERSET_WEBSERVER_TIMEOUT = int(timedelta(seconds=90).total_seconds())
+
+# Allow <style> blocks (e.g. Handlebars customCss/styleTemplate) through the
+# markdown/handlebars HTML sanitizer. Default rehype-sanitize schema strips
+# the `style` tag entirely, so it must be added to `tagNames` explicitly.
+HTML_SANITIZATION_SCHEMA_EXTENSIONS = {
+    "tagNames": ["style"],
+    "attributes": {
+        "div": ["style"],
+        "span": ["style"],
+    },
+}
