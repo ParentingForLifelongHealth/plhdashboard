@@ -83,7 +83,7 @@ window.PLH_DATA = {
       name:    "ParentApp - South Africa",
       desc:    "User engagement and retention for the South Africa ParentApp deployment.",
       // url:     "https://plhdashboard.org/sapa",
-      url:     "https://plhdashboard.org/superset/dashboard/p/48mwJEDoxeG/",
+      url:     "https://plhdashboard.org/superset/dashboard/p/Y7kxaPb82WK/",
       icon:    "smartphone",
       tag:     "Programme",
       appType: "ParentApp",
