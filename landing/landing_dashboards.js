@@ -50,6 +50,15 @@ window.PLH_DATA = {
       accent:  "gold"
     },
     {
+      name:    "LPPKN",
+      desc:    "Malaysia programme data scoped to family-level records for LPPKN.",
+      url:     "https://plhdashboard.org/superset/dashboard/p/ZPL20bqowod/",
+      icon:    "map",
+      tag:     "Programme",
+      appType: "ParentText|Facilitator App",
+      accent:  "sky"
+    },
+    {
       name:    "Parenting in Crisis - World Vision",
       desc:    "Crisis support metrics for the World Vision ParentText deployment.",
       // url:     "https://plhdashboard.org/wvi",
