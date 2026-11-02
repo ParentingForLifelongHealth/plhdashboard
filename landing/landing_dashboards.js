@@ -214,6 +214,14 @@ window.PLH_DATA = {
       tag:     "Programme",
       appType: "ParentText|ParentApp",
       accent:  "sky"
+    },
+    {
+      name:    "Light Touch Pilot · Malaysia",
+      desc:    "Light Touch Pilot monitoring data for Malaysia.",
+      url:     "https://plhdashboard.org/superset/dashboard/p/Nz92q6eExXA/",
+      icon:    "flask-conical",
+      tag:     "Other",
+      accent:  "sky"
     }
   ]
 };
