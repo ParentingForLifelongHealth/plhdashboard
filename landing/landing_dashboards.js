@@ -222,6 +222,15 @@ window.PLH_DATA = {
       icon:    "flask-conical",
       tag:     "Other",
       accent:  "sky"
+    },
+    {
+      name:    "ParentApp - Mexico",
+      desc:    "User engagement and retention for the Mexico ParentApp deployment.",
+      url:     "https://plhdashboard.org/superset/dashboard/p/XK4wQ7rM2e1/",
+      icon:    "smartphone",
+      tag:     "Programme",
+      appType: "ParentApp",
+      accent:  "sky"
     }
   ]
 };
