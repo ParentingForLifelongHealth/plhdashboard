@@ -29,6 +29,7 @@ x-superset-volumes:
   - ./docker:/app/docker
   - superset_home:/app/superset_home
   - ./superset-frontend/packages/superset-ui-core/src/components/assets/images/loading.svg:/app/superset-frontend/packages/superset-ui-core/src/components/assets/images/loading.svg:ro
+  - ./custom-images:/app/superset/static/assets/images/custom:ro
 
 x-common-build: &common-build
   context: .
@@ -81,6 +82,15 @@ services:
     command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
     user: "root"
     restart: unless-stopped
+    # Explicit resolvers: Docker's embedded DNS (127.0.0.11) forwards external
+    # lookups to the Docker VM gateway, which on this host is unreachable —
+    # *.googleapis.com then fails to resolve and every BigQuery call (dataset
+    # registration, chart data) hangs on retries. Egress itself is fine, so
+    # naming public resolvers directly restores it. Container-to-container
+    # names (superset_db, redis) still resolve via 127.0.0.11.
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     ports:
       - 8088:8088
     depends_on:
@@ -93,6 +103,12 @@ services:
 
   superset-init:
     container_name: superset_init
+    # same resolver fix — init installs pip requirements, so it needs to
+    # resolve pypi.org; without this it fails and BLOCKS superset/worker,
+    # which depend on it completing successfully.
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     build:
       <<: *common-build
     command: ["/app/docker/docker-init.sh"]
@@ -119,6 +135,10 @@ services:
       <<: *common-build
     container_name: superset_worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
+    # same resolver fix as superset_app — the worker runs async chart queries
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     env_file:
       - path: docker/.env # default
         required: true
@@ -155,6 +175,30 @@ services:
       superset-init:
         condition: service_completed_successfully
     user: "root"
+    volumes: *superset-volumes
+    healthcheck:
+      disable: true
+    networks:
+      - default
+
+
+  superset-mcp:
+    build:
+      <<: *common-build
+    container_name: superset_mcp
+    command: ["/app/docker/docker-bootstrap.sh", "mcp"]
+    env_file:
+      - path: docker/.env # default
+        required: true
+      - path: docker/.env-local # optional override
+        required: false
+    restart: unless-stopped
+    depends_on:
+      superset-init:
+        condition: service_completed_successfully
+    user: "root"
+    ports:
+      - ${MCP_PORT:-5008}:${MCP_PORT:-5008}
     volumes: *superset-volumes
     healthcheck:
       disable: true

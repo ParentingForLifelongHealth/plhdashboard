@@ -42,6 +42,7 @@ import {
   GRID_MIN_ROW_UNITS,
   GRID_BASE_UNIT,
 } from 'src/dashboard/util/constants';
+import { AiTranslated } from 'src/dashboard/components/AiTranslation';
 
 interface EditorInstance {
   resize?: (force: boolean) => void;
@@ -348,15 +349,21 @@ class Markdown extends PureComponent<MarkdownProps, MarkdownState> {
     const { hasError } = this.state;
 
     return (
-      <SafeMarkdown
-        source={
+      <AiTranslated
+        text={
           hasError
             ? MARKDOWN_ERROR_MESSAGE
             : this.state.markdownSource || MARKDOWN_PLACE_HOLDER
         }
-        htmlSanitization={this.props.htmlSanitization}
-        htmlSchemaOverrides={this.props.htmlSchemaOverrides}
-      />
+      >
+        {source => (
+          <SafeMarkdown
+            source={source}
+            htmlSanitization={this.props.htmlSanitization}
+            htmlSchemaOverrides={this.props.htmlSchemaOverrides}
+          />
+        )}
+      </AiTranslated>
     );
   }
 

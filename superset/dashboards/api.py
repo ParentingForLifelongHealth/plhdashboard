@@ -233,6 +233,7 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
         "add_favorite",
         "remove_favorite",
         "get_charts",
+        "translate",
         "get_datasets",
         "get_tabs",
         "get_embedded",
@@ -679,6 +680,81 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
             return self.response_403()
         except DashboardNotFoundError:
             return self.response_404()
+
+    @expose("/<id_or_slug>/translate/<language>", methods=("GET",))
+    @protect()
+    @safe
+    @statsd_metrics
+    @event_logger.log_this_with_context(
+        action=lambda self, *args, **kwargs: f"{self.__class__.__name__}.translate",
+        log_to_statsd=False,
+    )
+    def translate(self, id_or_slug: str, language: str) -> Response:
+        """Get an AI translation of a dashboard's visible text.
+        ---
+        get:
+          summary: Get an AI translation of a dashboard's visible text.
+          description: >-
+            Translates the dashboard title, chart titles and descriptions,
+            markdown, headers, tabs and native filter names into the given
+            language. Results are cached until the dashboard text changes.
+          parameters:
+          - in: path
+            schema:
+              type: string
+            name: id_or_slug
+          - in: path
+            schema:
+              type: string
+            name: language
+            description: A key of DASHBOARD_AI_TRANSLATION_LANGUAGES
+          responses:
+            200:
+              description: Map of source text to translated text
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      result:
+                        type: object
+                        properties:
+                          language:
+                            type: string
+                          cached:
+                            type: boolean
+                          translations:
+                            type: object
+                            additionalProperties:
+                              type: string
+            400:
+              $ref: '#/components/responses/400'
+            401:
+              $ref: '#/components/responses/401'
+            403:
+              $ref: '#/components/responses/403'
+            404:
+              $ref: '#/components/responses/404'
+            500:
+              $ref: '#/components/responses/500'
+        """
+        from superset.dashboards.ai_translation import (
+            translate_dashboard,
+            TranslationError,
+        )
+
+        try:
+            dashboard = DashboardDAO.get_by_id_or_slug(id_or_slug)
+            return self.response(200, result=translate_dashboard(dashboard, language))
+        except DashboardAccessDeniedError:
+            return self.response_403()
+        except DashboardNotFoundError:
+            return self.response_404()
+        except ValueError as ex:
+            return self.response_400(message=str(ex))
+        except TranslationError as ex:
+            logger.exception("Dashboard AI translation failed")
+            return self.response_500(message=f"Translation failed: {ex}")
 
     @expose("/", methods=("POST",))
     @protect()

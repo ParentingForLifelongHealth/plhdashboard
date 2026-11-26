@@ -38,6 +38,7 @@ import {
   useFilterControlDisplay,
 } from './FilterControlShared';
 import GroupByFilterCard from './GroupByFilterCard';
+import { useAiTranslation } from 'src/dashboard/components/AiTranslation';
 
 const FilterControl = ({
   dataMaskSelected,
@@ -56,6 +57,7 @@ const FilterControl = ({
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   const { name = '<undefined>' } = filter;
+  const trText = useAiTranslation();
 
   const isFilterInScope = useIsFilterInScope();
   const isMissingRequiredValue =
@@ -79,11 +81,11 @@ const FilterControl = ({
           id={`filter-name-${filter.id}`}
           data-test="filter-control-name"
         >
-          {name}
+          {trText(name)}
         </FilterControlTitle>
         {isRequired && <RequiredFieldIndicator />}
         {filter.description?.trim() && (
-          <DescriptionToolTip description={filter.description} />
+          <DescriptionToolTip description={trText(filter.description)} />
         )}
         <FilterStyledIcon data-test="filter-icon">{icon}</FilterStyledIcon>
       </FilterControlTitleBox>
@@ -95,6 +97,7 @@ const FilterControl = ({
       isRequired,
       filter.description,
       icon,
+      trText,
     ],
   );
 

@@ -45,6 +45,7 @@ import { getSliceHeaderTooltip } from 'src/dashboard/util/getSliceHeaderTooltip'
 import { DashboardPageIdContext } from 'src/dashboard/containers/DashboardPage';
 import RowCountLabel from 'src/components/RowCountLabel';
 import { Link } from 'react-router-dom';
+import { useAiTranslation } from 'src/dashboard/components/AiTranslation';
 
 const extensionsRegistry = getExtensionsRegistry();
 
@@ -174,6 +175,7 @@ const SliceHeader = forwardRef<HTMLDivElement, SliceHeaderProps>(
     },
     ref,
   ) => {
+    const trText = useAiTranslation();
     const SliceHeaderExtension = extensionsRegistry.get(
       'dashboard.slice.header',
     );
@@ -261,7 +263,7 @@ const SliceHeader = forwardRef<HTMLDivElement, SliceHeaderProps>(
             <div>
               <EditableTitle
                 title={
-                  sliceName ||
+                  trText(sliceName) ||
                   (editMode
                     ? '---' // this makes an empty title clickable
                     : '')

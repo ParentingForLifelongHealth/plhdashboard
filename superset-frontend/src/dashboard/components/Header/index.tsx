@@ -98,6 +98,7 @@ import { useHeaderActionsMenu } from './useHeaderActionsDropdownMenu';
 import { useHeaderAutoRefresh } from './useHeaderAutoRefresh';
 import AutoRefreshIndicator from '../AutoRefreshIndicator';
 import { RefreshButton } from '../RefreshButton';
+import { AiTranslationSelect, useAiTranslation } from '../AiTranslation';
 
 type DashboardPropertiesUpdate = {
   slug?: string;
@@ -592,16 +593,17 @@ const Header = (): JSX.Element => {
 
   const NavExtension = extensionsRegistry.get('dashboard.nav.right');
 
+  const trText = useAiTranslation();
   const editableTitleProps = useMemo(
     () => ({
-      title: dashboardTitle,
+      title: trText(dashboardTitle),
       canEdit: userCanEdit && editMode,
       onSave: handleChangeText,
       placeholder: t('Add the name of the dashboard'),
       label: t('Dashboard title'),
       showTooltip: false,
     }),
-    [dashboardTitle, editMode, handleChangeText, userCanEdit],
+    [dashboardTitle, editMode, handleChangeText, userCanEdit, trText],
   );
 
   const certifiedBadgeProps = useMemo(
@@ -650,8 +652,19 @@ const Header = (): JSX.Element => {
         />
       ),
       !editMode && !isEmbedded && metadataBar,
+      <AiTranslationSelect
+        key="ai-translation"
+        dashboardId={dashboardInfo.id}
+        languages={
+          dashboardInfo.common?.conf?.DASHBOARD_AI_TRANSLATION_LANGUAGES as
+            | Record<string, string>
+            | undefined
+        }
+        editMode={editMode}
+      />,
     ],
     [
+      dashboardInfo.common?.conf,
       boundActionCreators.savePublished,
       dashboardInfo.id,
       editMode,

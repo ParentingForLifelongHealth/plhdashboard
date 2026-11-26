@@ -387,7 +387,7 @@ AUTH_TYPE = AUTH_DB
 # AUTH_ROLE_ADMIN = 'Admin'
 
 # Uncomment to setup Public role name, no authentication needed
-AUTH_ROLE_PUBLIC = 'Public'
+AUTH_ROLE_PUBLIC = "Public"
 
 # Will allow user self registration
 # AUTH_USER_REGISTRATION = True
@@ -1357,6 +1357,18 @@ DASHBOARD_AUTO_REFRESH_INTERVALS = [
     [43200, "12 hours"],
     [86400, "24 hours"],
 ]
+
+# AI dashboard translation (Claude Agent SDK). Viewers pick a language from the
+# dashboard header; titles, markdown, tabs and filter names are translated by
+# Claude and stored on disk until the dashboard text changes. Auth comes from the
+# CLAUDE_CODE_OAUTH_TOKEN (or ANTHROPIC_API_KEY) environment variable.
+# An empty dict disables the feature. Keys are language codes, values the
+# language name shown in the dropdown and sent to the model.
+DASHBOARD_AI_TRANSLATION_LANGUAGES: dict[str, str] = {}
+DASHBOARD_AI_TRANSLATION_MODEL = "claude-opus-5-5"
+# Translations are stored here as JSON files (one per dashboard+language+text
+# version). Keep it on a persistent volume.
+DASHBOARD_AI_TRANSLATION_CACHE_DIR = os.path.join(DATA_DIR, "ai_translations")
 
 # Performance optimization: Return only custom tags in dashboard list API
 # When enabled, filters out implicit tags (owner, type, favorited_by) at SQL JOIN level
@@ -2618,7 +2630,6 @@ for env_var in ENV_VAR_KEYS:
     if env_var in os.environ:
         config_var = env_var.replace("SUPERSET__", "")
         globals()[config_var] = os.environ[env_var]
-
 
 
 PUBLIC_ROLE_LIKE_GAMMA = True

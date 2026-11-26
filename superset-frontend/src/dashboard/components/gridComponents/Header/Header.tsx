@@ -39,6 +39,7 @@ import {
   BACKGROUND_WHITE,
 } from 'src/dashboard/util/constants';
 import * as componentTypes from 'src/dashboard/util/componentTypes';
+import { AiTranslated } from 'src/dashboard/components/AiTranslation';
 
 export type ComponentType =
   (typeof componentTypes)[keyof typeof componentTypes];
@@ -283,12 +284,16 @@ class Header extends PureComponent<HeaderProps, HeaderState> {
                     />
                   </HoverMenu>
                 )}
-                <EditableTitle
-                  title={component.meta.text}
-                  canEdit={editMode}
-                  onSaveTitle={this.handleChangeText}
-                  showTooltip={false}
-                />
+                <AiTranslated text={component.meta.text}>
+                  {translated => (
+                    <EditableTitle
+                      title={translated}
+                      canEdit={editMode}
+                      onSaveTitle={this.handleChangeText}
+                      showTooltip={false}
+                    />
+                  )}
+                </AiTranslated>
                 {!editMode && !embeddedMode && (
                   <AnchorLink
                     id={component.id}

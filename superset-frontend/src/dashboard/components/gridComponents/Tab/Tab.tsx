@@ -50,6 +50,7 @@ import type {
   DropResult,
   DragItem,
 } from 'src/dashboard/components/dnd/dragDroppableConfig';
+import { useAiTranslation } from 'src/dashboard/components/AiTranslation';
 
 export const RENDER_TAB = 'RENDER_TAB';
 export const RENDER_TAB_CONTENT = 'RENDER_TAB_CONTENT';
@@ -150,6 +151,7 @@ interface DragDropChildProps {
 }
 
 const Tab = (props: TabProps): ReactElement => {
+  const trText = useAiTranslation();
   const dispatch = useDispatch();
   const canEdit = useSelector(
     (state: RootState) => state.dashboardInfo.dash_edit_perm,
@@ -443,7 +445,7 @@ const Tab = (props: TabProps): ReactElement => {
           ref={dragSourceRef}
         >
           <EditableTitle
-            title={component.meta.text}
+            title={trText(component.meta.text)}
             defaultTitle={component.meta.defaultText}
             placeholder={component.meta.placeholder}
             canEdit={editMode}

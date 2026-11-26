@@ -113,6 +113,7 @@ dependencies = [
 
 [project.optional-dependencies]
 
+ai-translation = ["claude-agent-sdk>=0.2.189, <0.3"]
 athena = ["pyathena[pandas]>=2, <3"]
 aurora-data-api = ["preset-sqlalchemy-aurora-data-api>=0.2.8,<0.3"]
 bigquery = [
