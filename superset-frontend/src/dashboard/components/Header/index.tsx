@@ -62,6 +62,7 @@ import {
 import { PageHeaderWithActions } from '@superset-ui/core/components/PageHeaderWithActions';
 import { useUnsavedChangesPrompt } from 'src/hooks/useUnsavedChangesPrompt';
 import DashboardEmbedModal from '../EmbeddedModal';
+import TranslationsModal from '../AiTranslation/TranslationsModal';
 import OverwriteConfirm from '../OverwriteConfirm';
 import {
   addDangerToast,
@@ -230,6 +231,7 @@ const Header = (): JSX.Element => {
   const [showingPropertiesModal, setShowingPropertiesModal] = useState(false);
   const [showingRefreshModal, setShowingRefreshModal] = useState(false);
   const [showingEmbedModal, setShowingEmbedModal] = useState(false);
+  const [showingTranslations, setShowingTranslations] = useState(false);
   const [showingReportModal, setShowingReportModal] = useState(false);
   const [currentReportDeleting, setCurrentReportDeleting] =
     useState<AlertObject | null>(null);
@@ -246,6 +248,12 @@ const Header = (): JSX.Element => {
     (state: HeaderRootState) => state.dashboardLayout.future.length,
   );
   const user = useSelector((state: HeaderRootState) => state.user);
+  // Owners and admins (dash_edit_perm) may review translations.
+  const canManageTranslations =
+    !!dashboardInfo.dash_edit_perm &&
+    Object.keys(
+      dashboardInfo.common?.conf?.DASHBOARD_AI_TRANSLATION_LANGUAGES ?? {},
+    ).length > 0;
   const chartIds = useChartIds();
 
   const {
@@ -830,6 +838,9 @@ const Header = (): JSX.Element => {
     showRefreshModal,
     setCurrentReportDeleting,
     manageEmbedded: showEmbedModal,
+    manageTranslations: canManageTranslations
+      ? () => setShowingTranslations(true)
+      : undefined,
     lastModifiedTime: actualLastModifiedTime,
     logEvent: boundActionCreators.logEvent,
   });
@@ -907,6 +918,13 @@ const Header = (): JSX.Element => {
 
       <OverwriteConfirm />
 
+      {canManageTranslations && showingTranslations && (
+        <TranslationsModal
+          dashboardId={dashboardInfo.id}
+          show
+          onHide={() => setShowingTranslations(false)}
+        />
+      )}
       {userCanCurate && (
         <DashboardEmbedModal
           show={showingEmbedModal}

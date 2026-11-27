@@ -390,6 +390,7 @@ export enum MenuKeys {
   EditCss = 'edit_css',
   ToggleFullscreen = 'toggle_fullscreen',
   ManageEmbedded = 'manage_embedded',
+  ManageTranslations = 'manage_translations',
   ManageEmailReports = 'manage_email_reports',
   ExportPivotXlsx = 'export_pivot_xlsx',
   EmbedCode = 'embed_code',

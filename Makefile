@@ -18,7 +18,7 @@
 # Python version installed; we need 3.10-3.11
 PYTHON=`command -v python3.11 || command -v python3.10`
 
-.PHONY: install superset venv pre-commit up down logs ps nuke ports open
+.PHONY: install superset venv pre-commit up down logs ps nuke ports open translate-dashboards
 
 install: superset pre-commit
 
@@ -146,3 +146,14 @@ ports:
 
 open:
 	./scripts/docker-compose-up.sh open
+
+# Pre-generate AI dashboard translations (saved to disk, served instantly).
+#   make translate-dashboards                          # every dashboard, every language
+#   make translate-dashboards DASHBOARD=12             # one dashboard (id or slug)
+#   make translate-dashboards DASHBOARD="12 parentapp" LANGUAGES="es-MX ms"
+#   make translate-dashboards DASHBOARD=12 FORCE=1     # re-translate, overwrite saved
+translate-dashboards:
+	docker exec superset_app superset translate-dashboards \
+		$(foreach d,$(DASHBOARD),-d $(d)) \
+		$(foreach l,$(LANGUAGES),-l $(l)) \
+		$(if $(FORCE),--force)

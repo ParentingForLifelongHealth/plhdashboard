@@ -64,7 +64,15 @@ import {
   RefreshSection,
   CertificationSection,
   AdvancedSection,
+  TranslationsSection,
 } from './sections';
+import getBootstrapData from 'src/utils/getBootstrapData';
+
+// Only people who can edit the dashboard reach this modal; the API also
+// checks ownership.
+const { common } = getBootstrapData();
+const SHOW_TRANSLATIONS =
+  Object.keys(common.conf?.DASHBOARD_AI_TRANSLATION_LANGUAGES ?? {}).length > 0;
 
 type PropertiesModalProps = {
   dashboardId: number;
@@ -811,6 +819,23 @@ const PropertiesModal = ({
               ),
               children: <CertificationSection isLoading={isLoading} />,
             },
+            ...(SHOW_TRANSLATIONS
+              ? [
+                  {
+                    key: 'translations',
+                    label: (
+                      <CollapseLabelInModal
+                        title={t('AI translations')}
+                        subtitle={t(
+                          'Re-translate, review and edit dashboard translations',
+                        )}
+                        testId="translations-section"
+                      />
+                    ),
+                    children: <TranslationsSection dashboardId={dashboardId} />,
+                  },
+                ]
+              : []),
             {
               key: 'advanced',
               label: (

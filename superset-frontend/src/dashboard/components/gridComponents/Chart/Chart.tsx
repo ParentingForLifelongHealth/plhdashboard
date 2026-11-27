@@ -18,6 +18,7 @@
  */
 import cx from 'classnames';
 import { useCallback, useEffect, useRef, useMemo, useState, memo } from 'react';
+import { VizType } from '@superset-ui/core';
 import type { ChartCustomization, JsonObject } from '@superset-ui/core';
 import { styled } from '@apache-superset/core/theme';
 import { t } from '@apache-superset/core/translation';
@@ -50,6 +51,7 @@ import {
 import { useIsAutoRefreshing } from 'src/dashboard/contexts/AutoRefreshContext';
 
 import SliceHeader from '../../SliceHeader';
+import { useAiTranslation } from '../../AiTranslation';
 import MissingChart from '../../MissingChart';
 
 import {
@@ -186,6 +188,24 @@ const Chart = (props: ChartProps) => {
     (state: RootState) => state.sliceEntities.slices[props.id] || EMPTY_OBJECT,
   );
   const sliceVizType = slice.viz_type;
+  const trText = useAiTranslation();
+  // AI translation: swap in the translated Handlebars template at render
+  // time only (no re-query, nothing written back to the chart's form data).
+  const translateHandlebars = useMemo(
+    () =>
+      sliceVizType === VizType.Handlebars
+        ? (chartProps: JsonObject) => ({
+            ...chartProps,
+            formData: {
+              ...chartProps.formData,
+              handlebarsTemplate: trText(
+                chartProps.formData?.handlebarsTemplate,
+              ),
+            },
+          })
+        : undefined,
+    [sliceVizType, trText],
+  );
   const sliceSliceId = slice.slice_id;
   const sliceSliceName = slice.slice_name;
   const editMode = useSelector(
@@ -754,6 +774,7 @@ const Chart = (props: ChartProps) => {
           timeout={timeout}
           triggerQuery={chart.triggerQuery}
           vizType={slice.viz_type}
+          postTransformProps={translateHandlebars}
           setControlValue={props.setControlValue}
           datasetsStatus={
             datasetsStatus as 'loading' | 'error' | 'complete' | undefined

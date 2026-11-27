@@ -114,7 +114,7 @@ from superset.dashboards.schemas import (
     thumbnail_query_schema,
 )
 from superset.exceptions import ScreenshotImageNotAvailableException
-from superset.extensions import event_logger
+from superset.extensions import event_logger, security_manager
 from superset.models.dashboard import Dashboard
 from superset.models.embedded_dashboard import EmbeddedDashboard
 from superset.security.guest_token import GuestUser
@@ -234,6 +234,7 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
         "remove_favorite",
         "get_charts",
         "translate",
+        "translations",
         "get_datasets",
         "get_tabs",
         "get_embedded",
@@ -681,7 +682,7 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
         except DashboardNotFoundError:
             return self.response_404()
 
-    @expose("/<id_or_slug>/translate/<language>", methods=("GET",))
+    @expose("/<id_or_slug>/translate/<language>", methods=("GET", "POST"))
     @protect()
     @safe
     @statsd_metrics
@@ -698,6 +699,8 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
             Translates the dashboard title, chart titles and descriptions,
             markdown, headers, tabs and native filter names into the given
             language. Results are cached until the dashboard text changes.
+        post:
+          summary: Re-translate (owners and admins), overwriting the saved translation.
           parameters:
           - in: path
             schema:
@@ -743,9 +746,14 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
             TranslationError,
         )
 
+        force = request.method == "POST"
         try:
             dashboard = DashboardDAO.get_by_id_or_slug(id_or_slug)
-            return self.response(200, result=translate_dashboard(dashboard, language))
+            if force and not security_manager.is_owner(dashboard):
+                return self.response_403()
+            return self.response(
+                200, result=translate_dashboard(dashboard, language, force=force)
+            )
         except DashboardAccessDeniedError:
             return self.response_403()
         except DashboardNotFoundError:
@@ -755,6 +763,87 @@ class DashboardRestApi(CustomTagsOptimizationMixin, BaseSupersetModelRestApi):
         except TranslationError as ex:
             logger.exception("Dashboard AI translation failed")
             return self.response_500(message=f"Translation failed: {ex}")
+
+    @expose("/<id_or_slug>/translations", methods=("GET",))
+    @expose("/<id_or_slug>/translations/<language>", methods=("PUT",))
+    @protect()
+    @safe
+    @statsd_metrics
+    @event_logger.log_this_with_context(
+        action=lambda self, *args, **kwargs: f"{self.__class__.__name__}.translations",
+        log_to_statsd=False,
+    )
+    def translations(self, id_or_slug: str, language: str | None = None) -> Response:
+        """List or edit saved AI translations of a dashboard (owners and admins).
+        ---
+        get:
+          summary: List saved translations for every configured language.
+          parameters:
+          - in: path
+            schema:
+              type: string
+            name: id_or_slug
+          responses:
+            200:
+              description: Languages, source strings and saved translations
+            403:
+              $ref: '#/components/responses/403'
+            404:
+              $ref: '#/components/responses/404'
+        put:
+          summary: Save reviewed translations for one language.
+          parameters:
+          - in: path
+            schema:
+              type: string
+            name: id_or_slug
+          - in: path
+            schema:
+              type: string
+            name: language
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    translations:
+                      type: object
+                      additionalProperties:
+                        type: string
+          responses:
+            200:
+              description: The saved translation record
+            400:
+              $ref: '#/components/responses/400'
+            403:
+              $ref: '#/components/responses/403'
+            404:
+              $ref: '#/components/responses/404'
+        """
+        from superset.dashboards.ai_translation import (
+            list_translations,
+            save_translations,
+        )
+
+        try:
+            dashboard = DashboardDAO.get_by_id_or_slug(id_or_slug)
+            if not security_manager.is_owner(dashboard):  # admins count as owners
+                return self.response_403()
+            if language is None:
+                return self.response(200, result=list_translations(dashboard))
+            edits = (request.json or {}).get("translations")
+            if not isinstance(edits, dict):
+                return self.response_400(message="translations object required")
+            return self.response(
+                200, result=save_translations(dashboard, language, edits)
+            )
+        except DashboardAccessDeniedError:
+            return self.response_403()
+        except DashboardNotFoundError:
+            return self.response_404()
+        except ValueError as ex:
+            return self.response_400(message=str(ex))
 
     @expose("/", methods=("POST",))
     @protect()

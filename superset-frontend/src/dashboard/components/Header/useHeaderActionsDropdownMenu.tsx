@@ -63,6 +63,7 @@ export const useHeaderActionsMenu = ({
   showRefreshModal,
   showReportModal,
   manageEmbedded,
+  manageTranslations,
   dashboardTitle,
   logEvent,
   setCurrentReportDeleting,
@@ -111,6 +112,9 @@ export const useHeaderActionsMenu = ({
         case MenuKeys.ManageEmbedded:
           manageEmbedded();
           break;
+        case MenuKeys.ManageTranslations:
+          manageTranslations?.();
+          break;
         default:
           break;
       }
@@ -122,6 +126,7 @@ export const useHeaderActionsMenu = ({
       showPropertiesModal,
       showRefreshModal,
       manageEmbedded,
+      manageTranslations,
       history,
     ],
   );
@@ -279,6 +284,13 @@ export const useHeaderActionsMenu = ({
       });
     }
 
+    if (!editMode && manageTranslations) {
+      menuItems.push({
+        key: MenuKeys.ManageTranslations,
+        label: t('Manage translations'),
+      });
+    }
+
     // Only add divider if there are items after it
     const hasItemsAfterDivider =
       (!editMode && reportMenuItem) ||
@@ -329,6 +341,7 @@ export const useHeaderActionsMenu = ({
     isLoading,
     lastModifiedTime,
     layout,
+    manageTranslations,
     onSave,
     refreshFrequency,
     reportMenuItem,

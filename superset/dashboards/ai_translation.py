@@ -29,6 +29,7 @@ import asyncio
 import hashlib
 import logging
 import os
+import re
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -50,8 +51,15 @@ SYSTEM_PROMPT = (
     "human-readable text. Keep organisation and programme names (e.g. "
     "'Parenting for Lifelong Health', 'PLH', 'ParentApp') in their original "
     "form. If a string is already in the target language or has nothing to "
-    "translate, return it unchanged."
+    "translate, return it unchanged. Some strings are Handlebars HTML "
+    "templates: translate only the visible text between tags and expressions; "
+    "copy every {{...}}, {{{...}}}, {{#...}}, {{/...}} and {{else}} expression, "
+    "every HTML tag and attribute, and all CSS/JS exactly as written."
 )
+
+# Every Handlebars expression ({{x}}, {{{x}}}, {{#each}}, ...). A translation
+# whose expressions differ from the source would break the template.
+HANDLEBARS_EXPRESSION = re.compile(r"\{\{.*?\}\}", re.DOTALL)
 
 OUTPUT_SCHEMA = {
     "type": "object",
@@ -74,6 +82,8 @@ def collect_strings(dashboard: Dashboard) -> list[str]:
     found: set[str | None] = {dashboard.dashboard_title}
     for chart in dashboard.slices:
         found.add(chart.slice_name)
+        if chart.viz_type == "handlebars":
+            found.add(json.loads(chart.params or "{}").get("handlebars_template"))
 
     layout = json.loads(dashboard.position_json or "{}")
     for component in layout.values():
@@ -90,6 +100,16 @@ def collect_strings(dashboard: Dashboard) -> list[str]:
 
 def cache_key(language: str, model: str, strings: list[str]) -> str:
     return hashlib.sha256(json.dumps([language, model, strings]).encode()).hexdigest()
+
+
+def _keep_expressions(source: str, translation: str) -> str:
+    """Fall back to the source if the model altered any {{...}} expression."""
+    if HANDLEBARS_EXPRESSION.findall(source) != HANDLEBARS_EXPRESSION.findall(
+        translation
+    ):
+        logger.warning("AI translation changed template expressions; kept original")
+        return source
+    return translation
 
 
 def _cache_path(dashboard: Dashboard, language_code: str, key: str) -> Path:
@@ -138,18 +158,68 @@ async def _ask_claude(language: str, model: str, strings: list[str]) -> list[str
     return translations
 
 
-def translate_dashboard(dashboard: Dashboard, language_code: str) -> dict[str, Any]:
-    """Return {"language": code, "translations": {source: translated}}."""
+def _locate(
+    dashboard: Dashboard, language_code: str, strings: list[str] | None = None
+) -> tuple[str, str, list[str], Path]:
+    """Return (language name, model, source strings, translation file path)."""
     languages: dict[str, str] = current_app.config["DASHBOARD_AI_TRANSLATION_LANGUAGES"]
     if language_code not in languages:
         raise ValueError(f"Unsupported language: {language_code}")
-
     language = languages[language_code]
     model = current_app.config["DASHBOARD_AI_TRANSLATION_MODEL"]
-    strings = collect_strings(dashboard)
+    if strings is None:
+        strings = collect_strings(dashboard)
     path = _cache_path(dashboard, language_code, cache_key(language, model, strings))
+    return language, model, strings, path
 
-    if path.exists():
+
+def list_translations(dashboard: Dashboard) -> dict[str, Any]:
+    """Saved translation record (or None) per configured language."""
+    languages: dict[str, str] = current_app.config["DASHBOARD_AI_TRANSLATION_LANGUAGES"]
+    strings = collect_strings(dashboard)
+    records: dict[str, Any] = {}
+    for code in languages:
+        path = _locate(dashboard, code, strings)[3]
+        records[code] = (
+            json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        )
+    return {"languages": languages, "strings": strings, "translations": records}
+
+
+def save_translations(
+    dashboard: Dashboard, language_code: str, edits: dict[str, str]
+) -> dict[str, Any]:
+    """Overwrite saved translations with reviewed text. Unknown sources ignored."""
+    _, _, strings, path = _locate(dashboard, language_code)
+    if not path.exists():
+        raise ValueError("Translate this language before editing it")
+    record = json.loads(path.read_text(encoding="utf-8"))
+    for source in strings:
+        target = edits.get(source)
+        if not isinstance(target, str):
+            continue
+        if HANDLEBARS_EXPRESSION.findall(source) != HANDLEBARS_EXPRESSION.findall(
+            target
+        ):
+            raise ValueError(
+                f"Template {{{{...}}}} expressions must stay unchanged: {source[:80]}"
+            )
+        record["translations"][source] = target
+    record["edited"] = datetime.now(timezone.utc).isoformat()
+    _write_atomic(path, json.dumps(record, indent=2))
+    return record
+
+
+def translate_dashboard(
+    dashboard: Dashboard, language_code: str, force: bool = False
+) -> dict[str, Any]:
+    """Return {"language": code, "translations": {source: translated}}.
+
+    With ``force`` the saved file (including manual edits) is overwritten.
+    """
+    language, model, strings, path = _locate(dashboard, language_code)
+
+    if path.exists() and not force:
         cached = json.loads(path.read_text(encoding="utf-8"))
         return {
             "language": language_code,
@@ -169,7 +239,10 @@ def translate_dashboard(dashboard: Dashboard, language_code: str) -> dict[str, A
         raise
     except Exception as ex:  # SDK/CLI/auth failures surface as many types
         raise TranslationError(str(ex)) from ex
-    mapping = dict(zip(strings, translated, strict=True))
+    mapping = {
+        source: _keep_expressions(source, target)
+        for source, target in zip(strings, translated, strict=True)
+    }
     record = {
         "dashboard_id": dashboard.id,
         "dashboard_title": dashboard.dashboard_title,

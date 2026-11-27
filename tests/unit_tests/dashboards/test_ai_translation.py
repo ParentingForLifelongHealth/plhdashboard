@@ -24,6 +24,8 @@ import pytest
 from superset.dashboards import ai_translation
 from superset.utils import json
 
+TEMPLATE = "<h3>Families</h3>{{#each data}}<p>{{this.count}} reached</p>{{/each}}"
+
 
 def _dashboard(title: str = "Reach", tab: str = "Overview") -> Any:
     position = {
@@ -38,7 +40,14 @@ def _dashboard(title: str = "Reach", tab: str = "Overview") -> Any:
     return SimpleNamespace(
         id=7,
         dashboard_title=title,
-        slices=[SimpleNamespace(slice_name="Total reach", description=None)],
+        slices=[
+            SimpleNamespace(slice_name="Total reach", viz_type="table", params="{}"),
+            SimpleNamespace(
+                slice_name="Summary card",
+                viz_type="handlebars",
+                params=json.dumps({"handlebars_template": TEMPLATE}),
+            ),
+        ],
         position_json=json.dumps(position),
         json_metadata=json.dumps(metadata),
     )
@@ -47,12 +56,21 @@ def _dashboard(title: str = "Reach", tab: str = "Overview") -> Any:
 def test_collect_strings() -> None:
     assert ai_translation.collect_strings(_dashboard()) == [
         "# Welcome",
+        TEMPLATE,
         "Country",
         "Families",
         "Overview",
         "Reach",
+        "Summary card",
         "Total reach",
     ]
+
+
+def test_keep_expressions_rejects_broken_template() -> None:
+    good = "<h3>Familias</h3>{{#each data}}<p>{{this.count}} alcanzadas</p>{{/each}}"
+    bad = "<h3>Familias</h3>{{#cada data}}<p>{{this.count}} alcanzadas</p>{{/cada}}"
+    assert ai_translation._keep_expressions(TEMPLATE, good) == good
+    assert ai_translation._keep_expressions(TEMPLATE, bad) == TEMPLATE
 
 
 def test_cache_key_changes_when_text_changes() -> None:
@@ -91,3 +109,37 @@ def test_translate_dashboard_uses_disk_cache(app_context: None, tmp_path: Path) 
 
     with pytest.raises(ValueError, match="Unsupported language"):
         ai_translation.translate_dashboard(_dashboard(), "xx")
+
+
+def test_save_and_list_translations(app_context: None, tmp_path: Path) -> None:
+    from flask import current_app
+
+    current_app.config["DASHBOARD_AI_TRANSLATION_LANGUAGES"] = {
+        "es": "Spanish",
+        "ms": "Malay",
+    }
+    current_app.config["DASHBOARD_AI_TRANSLATION_CACHE_DIR"] = str(tmp_path)
+
+    async def fake_ask(_lang: str, _model: str, strings: list[str]) -> list[str]:
+        return [f"es:{s}" for s in strings]
+
+    with pytest.raises(ValueError, match="Translate this language"):
+        ai_translation.save_translations(_dashboard(), "es", {"Reach": "x"})
+
+    with patch.object(ai_translation, "_ask_claude", side_effect=fake_ask):
+        ai_translation.translate_dashboard(_dashboard(), "es")
+
+    ai_translation.save_translations(
+        _dashboard(), "es", {"Reach": "Alcance", "Unknown": "ignored"}
+    )
+    with pytest.raises(ValueError, match="expressions"):
+        ai_translation.save_translations(_dashboard(), "es", {TEMPLATE: "<h3>X</h3>"})
+
+    listed = ai_translation.list_translations(_dashboard())
+    assert listed["translations"]["ms"] is None
+    saved = listed["translations"]["es"]
+    assert saved["translations"]["Reach"] == "Alcance"
+    assert "Unknown" not in saved["translations"]
+    assert "edited" in saved
+    cached = ai_translation.translate_dashboard(_dashboard(), "es")
+    assert cached["translations"]["Reach"] == "Alcance"

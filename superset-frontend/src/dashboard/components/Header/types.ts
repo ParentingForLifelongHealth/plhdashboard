@@ -55,6 +55,8 @@ export interface HeaderDropdownProps {
   userCanCurate: boolean;
   userCanExport: boolean | undefined;
   manageEmbedded: () => void;
+  /** Set only for admins when AI translation languages are configured. */
+  manageTranslations?: () => void;
   lastModifiedTime: number;
   logEvent: (...args: unknown[]) => unknown;
   refreshLimit?: number;
